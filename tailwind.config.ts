@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Syne", "sans-serif"],
-        body: ["Space Grotesk", "sans-serif"],
+        display: ["Outfit", "sans-serif"],
+        body: ["DM Sans", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -51,13 +51,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        rainbow: {
-          red: "hsl(var(--rainbow-red))",
-          orange: "hsl(var(--rainbow-orange))",
-          yellow: "hsl(var(--rainbow-yellow))",
-          green: "hsl(var(--rainbow-green))",
-          blue: "hsl(var(--rainbow-blue))",
-          purple: "hsl(var(--rainbow-purple))",
+        block: {
+          coral: "hsl(var(--block-coral))",
+          sky: "hsl(var(--block-sky))",
+          lime: "hsl(var(--block-lime))",
+          violet: "hsl(var(--block-violet))",
+          amber: "hsl(var(--block-amber))",
+          rose: "hsl(var(--block-rose))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -88,16 +88,11 @@ export default {
           from: { opacity: "0", transform: "translateY(8px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
-        "float": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-6px)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.4s ease-out forwards",
-        "float": "float 3s ease-in-out infinite",
       },
     },
   },
