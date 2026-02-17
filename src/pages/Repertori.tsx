@@ -25,25 +25,40 @@ const songs: Song[] = [
   {
     id: 1,
     title: "CANT DE LLUITA",
-    lyrics: `Som en acte de protesta
-Som mans fredes vora el foc
-Som la veu de la revolta
-Netes de la por i el dol
+    lyrics: `Som en acte de protesta.
+Som mans fredes vora el foc.
+Som la veu de la revolta,
+netes de la por i el dol.
 
 Disfressades d'utopia
-Emprendrem lluny del dolor
-La recerca de la vida
-A cavall de la raó
+emprendrem lluny del dolor
+la recerca de la vida
+a cavall de la raó.
 
-Coincideixen les mirades
-Fixades en l'horitzó
-Potser avui farem victòria
-Potser enterrarem el dol
+Som en acte de protesta.
+Som mans fredes vora el foc.
+Som la veu de la revolta,
+netes de la por i el dol.
 
-Doncs ens mantindrem alçades
-Ja no ens veuran de genolls
-El sol mantindrà la flama
-La lluna encendrà passió`,
+Coincideixen les mirades,
+fixades en l'horitzó.
+Potser avui farem victòria,
+potser enterrarem el plor.
+
+Som en acte de protesta.
+Som mans fredes vora el foc.
+Som la veu de la revolta,
+netes de la por i el dol.
+
+Doncs ens mantindrem alçades,
+ja no ens veuran de genolls.
+El Sol mantindrà la flama,
+la Lluna encendrà passió.
+
+Som en acte de protesta.
+Som mans fredes vora el foc.
+Som la veu de la revolta,
+netes de la por i el dol.`,
     audioTracks: [
       { label: "Veus juntes", src: "/songs/cant-de-lluita-veus-juntes.mp3" },
       { label: "Veu 1 (Greu)", src: "/songs/cant-de-lluita-veu1-greu.mp3" },
@@ -57,24 +72,63 @@ La lluna encendrà passió`,
   {
     id: 2,
     title: "PERDUDA EN TU",
+    lyrics: `Estrofa 1
+
+Quan ja no et cremi la mirada
+Recordarás tots els perills dels que venim.
+Cremen com brases, cauen, tendres
+Torna a aquells dies, no et rendies saps que sí
+
+Saps que es aixi…
+
+Pont:
+Fuma si és que en tens perquè res durarà
+Tot el que mai he volgut ets tu
+Mai arribaré al cel, no se el camí
+Amb una copa o dos
+
+Estribillo:
+Per tot el que he perdut en tu, oh,
+digue'm, s'ha perdut en tu? Oh...
+Si em poguessis deixar anar, oh,
+després de tot el que he perdut,
+Perduda en tu!
+Oh-oh, oh
+Perduda en tu?
+Oh-oh,
+nena, estic perduda en tu? Perduda en tu?
+
+Estrofa 2:
+Voldria veure el que penses
+Entendre el pes de tot el que t'ha fet patir
+Abraçam fort tingue'm paciencia
+Se que mestimes molt mes del que em vols ferir
+I encara em tens aqui`,
+    audioTracks: [
+      { label: "Veus juntes", src: "/songs/perduda-en-tu-veus-juntes.mp3" },
+      { label: "Veu 1 (Aguda)", src: "/songs/perduda-en-tu-veu1-aguda.mp3" },
+      { label: "Veu 2 (Greu)", src: "/songs/perduda-en-tu-veu2-greu.mp3" },
+    ],
   },
   {
     id: 3,
     title: "FOC AL COR",
     lyrics: `Som foc al Cor
 Espurna, Flama i Brasa
-
 Fondrem la por
 Com la neu de la carena
+
 Encens les llums
 Amb la pell de gallina
 Sento l'escalfor,
 Estel fugaç que mira
 
+PONT
 Nena per fi a casa has arribat
-Això que sento no és casualitat
+Això que sento no és casualitat,
 
-No es només perquè sigui Nadal
+ESTRIBILLO
+No es només perqué sigui Nadal
 Ni és l'arbre, les llums ni els regals
 És sentir que som comunitat
 És mirar-te
@@ -84,8 +138,20 @@ Som llar de foc,
 som família escollida,
 Tendra revolució
 Que ens trobarà unides
+
 Farem que aquest amor
-sigui tots els dies`,
+sigui tots els dies.
+
+PONT
+Nena per fi a casa has arribat
+Això que sento no és casualitat,
+
+ESTRIBILLO
+No es només perqué sigui Nadal
+Ni és l'arbre, les llums ni els regals
+És sentir que som comunitat
+És mirar-te
+I voler-te abraçar`,
     audioTracks: [
       { label: "Àudio d'assaig", src: "/songs/foc-al-cor.mp3" },
     ],
@@ -93,6 +159,59 @@ sigui tots els dies`,
   {
     id: 4,
     title: "SI TE'N VAS",
+    lyrics: `Se li nota a la veu
+Per dins és de colors
+I li sobra el valor que ens manca a les dues
+I arrisca la vida sempre en causes perdudes
+Tant de bo que la trobi enmig de tantes flors
+Tant de bo que sigui una rossella
+Que m'agafi la mà i que em digui que ella
+No comprèn la vida, no...
+I que em demani més més més dona'm més
+Que m'ho demani.
+
+És capaç de nedar sota el mar més profund
+La superheroïna que salvarà el món
+Allà on trenquen les ones, salvarà papallones.
+
+Tant de bo que desperti i no busqui raons
+Tant de bo que comenci de 0
+I poder-li dir que he passat la vida
+No sabent que l'espero, nooo
+Sense que em demani més més més dona'm més,
+Sense que m'ho demani.
+
+Si te'n vas em quedo al carreró sense sortida, uuuh sense sortida.
+Que aquest bar no suportarà una altra partida, una altra partida.
+
+Com un extraterrestre que arriba i aterra
+I em porta regals des d'un altre planeta
+Li regalo una pedra, un record de la Terra..
+Pregunta per què l'home va inventar la guerra
+I en silenci pregunta coses més profundes
+I em poso calenta quan em balla una lenta
+
+Si te'n vas em quedo al carreró sense sortida, uuuh sense sortida.
+Que aquest bar no suportarà una altra partida, una altra partida.
+
+Si he trigat i no he vingut
+És que hi ha hagut impediments
+Em van portar detinguda
+Obligada a declarar
+
+He robat he mentit
+I he perdut també el temps
+I he buscat allò prohibit
+Per tenir bons aliments
+
+I és que la realitat
+Que necessito
+Se n'ha anat darrera
+de ese culito
+
+x2
+Si te'n vas em quedo al carreró sense sortida, uuuh sense sortida.
+Que aquest bar no suportarà una altra partida, una altra partida.`,
   },
   {
     id: 5,
