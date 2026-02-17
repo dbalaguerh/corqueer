@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Megaphone, CalendarDays, Music, Sparkles } from "lucide-react";
+import { Megaphone, CalendarDays, Music, MessageSquare, Sparkles } from "lucide-react";
 import logo from "@/assets/logo.png";
 import RainbowBar from "@/components/RainbowBar";
 import { useProfile } from "@/hooks/useProfile";
@@ -77,7 +77,7 @@ const Home = () => {
 
       {/* Quick Actions — grid de blocs de colors */}
       <div className="px-4 mt-6">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           <motion.a
             href="/calendari"
             className="group flex flex-col gap-3 rounded-2xl p-4 shadow-card border border-border bg-card overflow-hidden relative"
@@ -92,7 +92,7 @@ const Home = () => {
             </div>
             <div>
               <p className="text-sm font-bold font-display text-foreground">Calendari</p>
-              <p className="text-xs text-muted-foreground">Pròxims events</p>
+              <p className="text-[10px] text-muted-foreground">Pròxims events</p>
             </div>
           </motion.a>
 
@@ -110,7 +110,25 @@ const Home = () => {
             </div>
             <div>
               <p className="text-sm font-bold font-display text-foreground">Repertori</p>
-              <p className="text-xs text-muted-foreground">Cançons i àudios</p>
+              <p className="text-[10px] text-muted-foreground">Cançons i àudios</p>
+            </div>
+          </motion.a>
+
+          <motion.a
+            href="/mur"
+            className="group flex flex-col gap-3 rounded-2xl p-4 shadow-card border border-border bg-card overflow-hidden relative"
+            whileTap={{ scale: 0.97 }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <div className="absolute top-0 left-0 w-full h-1 bg-block-coral" />
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-block-coral">
+              <MessageSquare className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <p className="text-sm font-bold font-display text-foreground">El Mur</p>
+              <p className="text-[10px] text-muted-foreground">Idees i àudios</p>
             </div>
           </motion.a>
         </div>
