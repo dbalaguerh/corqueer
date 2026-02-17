@@ -6,44 +6,27 @@ import RainbowBar from "@/components/RainbowBar";
 interface Song {
   id: number;
   title: string;
-  composer: string;
-  voices: string[];
-  lyrics?: string;
   hasAudio: boolean;
+  lyrics?: string;
 }
 
 const songs: Song[] = [
-  {
-    id: 1, title: "Somewhere Over the Rainbow", composer: "Harold Arlen",
-    voices: ["Soprano", "Alto", "Tenor", "Baix"],
-    lyrics: "Somewhere over the rainbow, way up high\nThere's a land that I heard of once in a lullaby\nSomewhere over the rainbow, skies are blue\nAnd the dreams that you dare to dream really do come true…",
-    hasAudio: true,
-  },
-  {
-    id: 2, title: "True Colors", composer: "Cyndi Lauper / Tom Kelly",
-    voices: ["Soprano", "Alto"],
-    lyrics: "You with the sad eyes\nDon't be discouraged\nOh, I realize\nIt's hard to take courage\nIn a world full of people\nYou can lose sight of it all…",
-    hasAudio: true,
-  },
-  {
-    id: 3, title: "Born This Way", composer: "Lady Gaga",
-    voices: ["Alto", "Tenor", "Baix"],
-    lyrics: "It doesn't matter if you love him, or capital H-I-M\nJust put your paws up\n'Cause you were born this way, baby…",
-    hasAudio: false,
-  },
-  {
-    id: 4, title: "I Am What I Am", composer: "Jerry Herman",
-    voices: ["Soprano", "Tenor"],
-    hasAudio: true,
-  },
+  { id: 1, title: "CANT DE LLUITA", hasAudio: false },
+  { id: 2, title: "PERDUDA EN TU", hasAudio: false },
+  { id: 3, title: "FOC AL COR", hasAudio: false },
+  { id: 4, title: "SI TE'N VAS", hasAudio: false },
+  { id: 5, title: "CLANDESTINA", hasAudio: false },
+  { id: 6, title: "DUETTO DI DUE GATTI", hasAudio: false },
 ];
 
-const voiceColors: Record<string, string> = {
-  Soprano: "bg-rainbow-red/15 text-rainbow-red",
-  Alto: "bg-rainbow-orange/15 text-rainbow-orange",
-  Tenor: "bg-rainbow-blue/15 text-rainbow-blue",
-  Baix: "bg-rainbow-purple/15 text-rainbow-purple",
-};
+const rainbowColors = [
+  "from-rainbow-red to-rainbow-orange",
+  "from-rainbow-orange to-rainbow-yellow",
+  "from-rainbow-yellow to-rainbow-green",
+  "from-rainbow-green to-rainbow-blue",
+  "from-rainbow-blue to-rainbow-purple",
+  "from-rainbow-purple to-rainbow-red",
+];
 
 const Repertori = () => {
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -54,8 +37,8 @@ const Repertori = () => {
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-accent/10 blur-3xl" />
         <div className="relative px-4 pt-8 pb-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent">
-              <Music className="h-5 w-5 text-accent-foreground" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-rainbow">
+              <Music className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
               <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">Repertori</h1>
@@ -63,7 +46,7 @@ const Repertori = () => {
             </div>
           </div>
         </div>
-        <RainbowBar />
+        <RainbowBar className="h-[5px]" />
       </header>
 
       <div className="px-4 mt-4 space-y-3">
@@ -79,16 +62,11 @@ const Repertori = () => {
               onClick={() => setExpanded(expanded === song.id ? null : song.id)}
               className="w-full flex items-center justify-between p-4 text-left"
             >
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-bold font-display text-foreground truncate">{song.title}</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">{song.composer}</p>
-                <div className="flex gap-1.5 mt-2 flex-wrap">
-                  {song.voices.map((v) => (
-                    <span key={v} className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${voiceColors[v] || "bg-muted text-muted-foreground"}`}>
-                      {v}
-                    </span>
-                  ))}
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${rainbowColors[i % rainbowColors.length]} flex items-center justify-center shrink-0`}>
+                  <span className="text-primary-foreground font-extrabold font-display text-sm">{i + 1}</span>
                 </div>
+                <h3 className="text-sm font-bold font-display text-foreground truncate">{song.title}</h3>
               </div>
               <ChevronDown className={`h-5 w-5 text-muted-foreground shrink-0 ml-2 transition-transform duration-200 ${expanded === song.id ? "rotate-180" : ""}`} />
             </button>
@@ -115,13 +93,13 @@ const Repertori = () => {
                       </div>
                     )}
                     {song.hasAudio && (
-                      <button className="flex items-center gap-2 rounded-xl gradient-primary px-4 py-2.5 text-xs font-bold text-primary-foreground shadow-card">
+                      <button className="flex items-center gap-2 rounded-xl gradient-rainbow px-4 py-2.5 text-xs font-bold text-primary-foreground shadow-card">
                         <Play className="h-4 w-4" />
                         Escoltar àudio d'assaig
                       </button>
                     )}
                     {!song.lyrics && !song.hasAudio && (
-                      <p className="text-xs text-muted-foreground italic">Encara no hi ha contingut disponible.</p>
+                      <p className="text-xs text-muted-foreground italic">Puja els fitxers (MP3 i lletres) al xat per afegir contingut aquí.</p>
                     )}
                   </div>
                 </motion.div>
