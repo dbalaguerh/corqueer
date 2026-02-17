@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,62 +6,51 @@
 
 @layer base {
   :root {
-    --background: 280 10% 98%;
-    --foreground: 280 30% 10%;
+    --background: 0 0% 97%;
+    --foreground: 240 15% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 280 30% 10%;
+    --card-foreground: 240 15% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 280 30% 10%;
+    --popover-foreground: 240 15% 10%;
 
-    --primary: 280 65% 60%;
+    --primary: 260 70% 58%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 320 45% 94%;
-    --secondary-foreground: 320 40% 25%;
+    --secondary: 180 50% 92%;
+    --secondary-foreground: 180 50% 20%;
 
-    --muted: 260 15% 95%;
-    --muted-foreground: 260 10% 45%;
+    --muted: 240 10% 94%;
+    --muted-foreground: 240 8% 50%;
 
-    --accent: 45 90% 65%;
-    --accent-foreground: 45 90% 15%;
+    --accent: 40 95% 58%;
+    --accent-foreground: 40 95% 12%;
 
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 260 10% 90%;
-    --input: 260 10% 90%;
-    --ring: 280 65% 60%;
+    --border: 240 8% 90%;
+    --input: 240 8% 90%;
+    --ring: 260 70% 58%;
 
     --radius: 1rem;
 
-    /* Rainbow accent colors */
-    --rainbow-red: 350 80% 60%;
-    --rainbow-orange: 25 95% 60%;
-    --rainbow-yellow: 45 95% 62%;
-    --rainbow-green: 160 65% 45%;
-    --rainbow-blue: 220 80% 60%;
-    --rainbow-purple: 280 65% 60%;
+    /* Block colors — distinct solid hues */
+    --block-coral: 8 85% 62%;
+    --block-sky: 200 85% 55%;
+    --block-lime: 145 60% 48%;
+    --block-violet: 270 70% 62%;
+    --block-amber: 38 95% 55%;
+    --block-rose: 340 75% 60%;
 
     /* Custom tokens */
-    --gradient-rainbow: linear-gradient(
-      135deg,
-      hsl(350, 80%, 60%),
-      hsl(25, 95%, 60%),
-      hsl(45, 95%, 62%),
-      hsl(160, 65%, 45%),
-      hsl(220, 80%, 60%),
-      hsl(280, 65%, 60%)
-    );
-    --gradient-primary: linear-gradient(135deg, hsl(280, 65%, 60%), hsl(320, 60%, 65%));
-    --gradient-warm: linear-gradient(180deg, hsl(280, 20%, 97%), hsl(320, 25%, 96%));
-    --gradient-genz: linear-gradient(135deg, hsl(280, 65%, 60%), hsl(45, 90%, 65%));
-    --shadow-card: 0 4px 20px -4px hsl(280 50% 50% / 0.08);
-    --shadow-elevated: 0 12px 40px -10px hsl(280 50% 50% / 0.2);
+    --gradient-primary: linear-gradient(135deg, hsl(260, 70%, 58%), hsl(300, 60%, 62%));
+    --shadow-card: 0 2px 12px -2px hsl(240 10% 50% / 0.08);
+    --shadow-elevated: 0 8px 30px -8px hsl(260 50% 40% / 0.18);
 
-    --font-display: 'Syne', sans-serif;
-    --font-body: 'Space Grotesk', sans-serif;
+    --font-display: 'Outfit', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -74,25 +63,25 @@
   }
 
   .dark {
-    --background: 280 20% 6%;
-    --foreground: 280 10% 95%;
-    --card: 280 15% 10%;
-    --card-foreground: 280 10% 95%;
-    --popover: 280 15% 10%;
-    --popover-foreground: 280 10% 95%;
-    --primary: 280 65% 65%;
+    --background: 240 15% 6%;
+    --foreground: 240 10% 95%;
+    --card: 240 12% 10%;
+    --card-foreground: 240 10% 95%;
+    --popover: 240 12% 10%;
+    --popover-foreground: 240 10% 95%;
+    --primary: 260 70% 65%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 280 20% 15%;
-    --secondary-foreground: 280 10% 90%;
-    --muted: 280 15% 15%;
-    --muted-foreground: 280 10% 55%;
-    --accent: 45 80% 55%;
-    --accent-foreground: 45 90% 90%;
+    --secondary: 180 30% 15%;
+    --secondary-foreground: 180 30% 90%;
+    --muted: 240 12% 15%;
+    --muted-foreground: 240 8% 55%;
+    --accent: 40 80% 50%;
+    --accent-foreground: 40 90% 90%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 280 10% 18%;
-    --input: 280 10% 18%;
-    --ring: 280 65% 65%;
+    --border: 240 10% 18%;
+    --input: 240 10% 18%;
+    --ring: 260 70% 65%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -120,26 +109,8 @@
 }
 
 @layer utilities {
-  .gradient-rainbow {
-    background: var(--gradient-rainbow);
-  }
-
   .gradient-primary {
     background: var(--gradient-primary);
-  }
-
-  .gradient-warm {
-    background: var(--gradient-warm);
-  }
-
-  .gradient-genz {
-    background: var(--gradient-genz);
-  }
-
-  .rainbow-bar {
-    height: 4px;
-    background: var(--gradient-rainbow);
-    border-radius: 2px;
   }
 
   .shadow-card {
@@ -162,7 +133,6 @@
     mix-blend-mode: multiply;
   }
 
-  /* Hide scrollbar for bottom nav spacing */
   .pb-safe {
     padding-bottom: 5.5rem;
   }
@@ -174,10 +144,25 @@
     background-clip: text;
   }
 
-  .text-gradient-rainbow {
-    background: var(--gradient-rainbow);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+  /* Block color utilities */
+  .bg-block-coral { background-color: hsl(var(--block-coral)); }
+  .bg-block-sky { background-color: hsl(var(--block-sky)); }
+  .bg-block-lime { background-color: hsl(var(--block-lime)); }
+  .bg-block-violet { background-color: hsl(var(--block-violet)); }
+  .bg-block-amber { background-color: hsl(var(--block-amber)); }
+  .bg-block-rose { background-color: hsl(var(--block-rose)); }
+
+  .bg-block-coral\/10 { background-color: hsl(var(--block-coral) / 0.1); }
+  .bg-block-sky\/10 { background-color: hsl(var(--block-sky) / 0.1); }
+  .bg-block-lime\/10 { background-color: hsl(var(--block-lime) / 0.1); }
+  .bg-block-violet\/10 { background-color: hsl(var(--block-violet) / 0.1); }
+  .bg-block-amber\/10 { background-color: hsl(var(--block-amber) / 0.1); }
+  .bg-block-rose\/10 { background-color: hsl(var(--block-rose) / 0.1); }
+
+  .text-block-coral { color: hsl(var(--block-coral)); }
+  .text-block-sky { color: hsl(var(--block-sky)); }
+  .text-block-lime { color: hsl(var(--block-lime)); }
+  .text-block-violet { color: hsl(var(--block-violet)); }
+  .text-block-amber { color: hsl(var(--block-amber)); }
+  .text-block-rose { color: hsl(var(--block-rose)); }
 }

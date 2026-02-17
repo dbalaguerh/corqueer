@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 interface Profile {
   name: string;
   pronouns: string;
+  email: string;
+  phone: string;
+  photoUrl?: string;
 }
 
 const PROFILE_KEY = "clandestina_profile";
@@ -24,7 +27,12 @@ export const useProfile = () => {
     setProfile(data);
   };
 
+  const clearProfile = () => {
+    localStorage.removeItem(PROFILE_KEY);
+    setProfile(null);
+  };
+
   const needsOnboarding = !loading && !profile;
 
-  return { profile, loading, needsOnboarding, saveProfile };
+  return { profile, loading, needsOnboarding, saveProfile, clearProfile };
 };

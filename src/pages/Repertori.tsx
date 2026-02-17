@@ -19,13 +19,13 @@ const songs: Song[] = [
   { id: 6, title: "DUETTO DI DUE GATTI", hasAudio: false },
 ];
 
-const rainbowColors = [
-  "from-rainbow-red to-rainbow-orange",
-  "from-rainbow-orange to-rainbow-yellow",
-  "from-rainbow-yellow to-rainbow-green",
-  "from-rainbow-green to-rainbow-blue",
-  "from-rainbow-blue to-rainbow-purple",
-  "from-rainbow-purple to-rainbow-red",
+const blockColorClasses = [
+  "bg-block-coral",
+  "bg-block-amber",
+  "bg-block-lime",
+  "bg-block-sky",
+  "bg-block-violet",
+  "bg-block-rose",
 ];
 
 const Repertori = () => {
@@ -34,10 +34,9 @@ const Repertori = () => {
   return (
     <div className="pb-safe">
       <header className="relative overflow-hidden bg-card border-b border-border">
-        <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-accent/10 blur-3xl" />
         <div className="relative px-4 pt-8 pb-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-rainbow">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-block-violet">
               <Music className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
@@ -46,24 +45,25 @@ const Repertori = () => {
             </div>
           </div>
         </div>
-        <RainbowBar className="h-[5px]" />
+        <RainbowBar className="h-[4px]" />
       </header>
 
       <div className="px-4 mt-4 space-y-3">
         {songs.map((song, i) => (
           <motion.div
             key={song.id}
-            className="rounded-2xl bg-card border border-border shadow-card overflow-hidden"
+            className="rounded-2xl bg-card border border-border shadow-card overflow-hidden relative"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.06 * i }}
           >
+            <div className={`absolute left-0 top-0 w-1.5 h-full ${blockColorClasses[i % blockColorClasses.length]}`} />
             <button
               onClick={() => setExpanded(expanded === song.id ? null : song.id)}
-              className="w-full flex items-center justify-between p-4 text-left"
+              className="w-full flex items-center justify-between p-4 pl-5 text-left"
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className={`h-10 w-10 rounded-xl bg-gradient-to-br ${rainbowColors[i % rainbowColors.length]} flex items-center justify-center shrink-0`}>
+                <div className={`h-10 w-10 rounded-xl ${blockColorClasses[i % blockColorClasses.length]} flex items-center justify-center shrink-0`}>
                   <span className="text-primary-foreground font-extrabold font-display text-sm">{i + 1}</span>
                 </div>
                 <h3 className="text-sm font-bold font-display text-foreground truncate">{song.title}</h3>
@@ -80,7 +80,7 @@ const Repertori = () => {
                   transition={{ duration: 0.2 }}
                   className="overflow-hidden"
                 >
-                  <div className="px-4 pb-4 border-t border-border pt-3 space-y-3">
+                  <div className="px-4 pb-4 border-t border-border pt-3 space-y-3 pl-5">
                     {song.lyrics && (
                       <div>
                         <div className="flex items-center gap-1.5 mb-1.5">
@@ -93,7 +93,7 @@ const Repertori = () => {
                       </div>
                     )}
                     {song.hasAudio && (
-                      <button className="flex items-center gap-2 rounded-xl gradient-rainbow px-4 py-2.5 text-xs font-bold text-primary-foreground shadow-card">
+                      <button className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground shadow-card">
                         <Play className="h-4 w-4" />
                         Escoltar àudio d'assaig
                       </button>
