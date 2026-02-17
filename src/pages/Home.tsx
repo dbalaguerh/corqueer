@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Megaphone, CalendarDays, Music, Sparkles } from "lucide-react";
-import logo from "@/assets/logo.jpg";
+import logo from "@/assets/logo.png";
 import RainbowBar from "@/components/RainbowBar";
 import { useProfile } from "@/hooks/useProfile";
 
@@ -36,19 +36,18 @@ const Home = () => {
     <div className="pb-safe">
       {/* Hero — logo molt gran */}
       <div className="relative overflow-hidden bg-card">
-        <div className="flex flex-col items-center px-6 pt-10 pb-6">
+        <div className="flex flex-col items-center px-6 pt-3 pb-4">
           <motion.div
             initial={{ scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            className="w-full flex justify-center"
           >
-            <div className="h-52 w-52 rounded-[2.5rem] overflow-hidden shadow-elevated">
-              <img
-                src={logo}
-                alt="Logo La Clandestina"
-                className="h-full w-full object-cover logo-transparent"
-              />
-            </div>
+            <img
+              src={logo}
+              alt="Logo La Clandestina"
+              className="w-72 h-auto object-contain"
+            />
           </motion.div>
 
           {profile && (
