@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Home, Calendar, Music, User } from "lucide-react";
+import { Home, Calendar, Music, MessageSquare, User } from "lucide-react";
 import { motion } from "framer-motion";
 import RainbowBar from "@/components/RainbowBar";
 
@@ -7,6 +7,7 @@ const navItems = [
   { to: "/", icon: Home, label: "Inici" },
   { to: "/calendari", icon: Calendar, label: "Calendari" },
   { to: "/repertori", icon: Music, label: "Repertori" },
+  { to: "/mur", icon: MessageSquare, label: "Mur" },
   { to: "/perfil", icon: User, label: "Perfil" },
 ];
 

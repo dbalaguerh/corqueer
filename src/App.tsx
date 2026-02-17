@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Calendari from "./pages/Calendari";
 import Repertori from "./pages/Repertori";
+import Mur from "./pages/Mur";
 import Perfil from "./pages/Perfil";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
@@ -27,6 +28,7 @@ const AppContent = () => {
         <Route path="/" element={<Home />} />
         <Route path="/calendari" element={<Calendari />} />
         <Route path="/repertori" element={<Repertori />} />
+        <Route path="/mur" element={<Mur />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
