@@ -20,9 +20,9 @@ const typeConfig: Record<EventType, { label: string; color: string }> = {
 };
 
 const events: CalEvent[] = [
-  { id: 1, title: "Assaig setmanal", type: "assaig", date: "Dimecres 19 feb", time: "19:30 – 21:30", location: "Centre Cívic Cotxeres" },
-  { id: 2, title: "Assaig setmanal", type: "assaig", date: "Dimecres 26 feb", time: "19:30 – 21:30", location: "Centre Cívic Cotxeres" },
-  { id: 3, title: "Sopar de carnaval 🎭", type: "social", date: "Dissabte 1 mar", time: "20:00", location: "Restaurant El Racó" },
+  { id: 1, title: "🎨 ART CARXOFA — Coming Soon!", type: "social", date: "Pròximament", time: "TBA", location: "Per confirmar" },
+  { id: 2, title: "Assaig setmanal", type: "assaig", date: "Dimecres 19 feb", time: "19:30 – 21:30", location: "Centre Cívic Cotxeres" },
+  { id: 3, title: "Assaig setmanal", type: "assaig", date: "Dimecres 26 feb", time: "19:30 – 21:30", location: "Centre Cívic Cotxeres" },
   { id: 4, title: "Concert de Primavera 🌸", type: "concert", date: "Dissabte 15 mar", time: "19:00", location: "Palau de la Música" },
   { id: 5, title: "Assaig general", type: "assaig", date: "Dimecres 12 mar", time: "19:00 – 22:00", location: "Palau de la Música" },
 ];
@@ -34,7 +34,7 @@ const Calendari = () => {
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-primary/5 blur-3xl" />
         <div className="relative px-4 pt-8 pb-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-primary">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-rainbow">
               <CalendarDays className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
@@ -43,7 +43,7 @@ const Calendari = () => {
             </div>
           </div>
         </div>
-        <RainbowBar />
+        <RainbowBar className="h-[5px]" />
       </header>
 
       {/* Filters */}

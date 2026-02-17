@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,8 +10,30 @@ import Repertori from "./pages/Repertori";
 import Perfil from "./pages/Perfil";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
+import Onboarding from "./components/Onboarding";
+import { useProfile } from "./hooks/useProfile";
 
 const queryClient = new QueryClient();
+
+const AppContent = () => {
+  const { needsOnboarding, saveProfile } = useProfile();
+
+  return (
+    <>
+      {needsOnboarding && (
+        <Onboarding onComplete={(data) => saveProfile(data)} />
+      )}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/calendari" element={<Calendari />} />
+        <Route path="/repertori" element={<Repertori />} />
+        <Route path="/perfil" element={<Perfil />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <BottomNav />
+    </>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -18,14 +41,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/calendari" element={<Calendari />} />
-          <Route path="/repertori" element={<Repertori />} />
-          <Route path="/perfil" element={<Perfil />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <BottomNav />
+        <AppContent />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

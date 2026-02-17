@@ -18,7 +18,7 @@ const BottomNav = () => {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/90 backdrop-blur-xl">
-      <div className="rainbow-bar" />
+      <div className="rainbow-bar" style={{ height: '5px' }} />
       <div className="flex items-center justify-around px-2 py-2.5">
         {navItems.map((item) => {
           const isActive = location.pathname === item.to;
