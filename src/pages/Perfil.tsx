@@ -7,7 +7,6 @@ const mockUser = {
   email: "alex@example.com",
   pronouns: "ell/ella",
   voice: "Alto",
-  avatar: null,
 };
 
 const voiceBadge: Record<string, string> = {
@@ -20,71 +19,81 @@ const voiceBadge: Record<string, string> = {
 const Perfil = () => {
   return (
     <div className="pb-safe">
-      <header className="bg-card border-b border-border">
-        <div className="px-4 pt-6 pb-4">
-          <div className="flex items-center gap-2">
-            <User className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-bold font-display text-foreground">Perfil</h1>
+      <header className="relative overflow-hidden bg-card border-b border-border">
+        <div className="absolute top-0 left-0 w-40 h-40 rounded-full bg-primary/5 blur-3xl" />
+        <div className="relative px-4 pt-8 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-primary">
+              <User className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">Perfil</h1>
           </div>
         </div>
         <RainbowBar />
       </header>
 
-      <div className="px-4 mt-6">
+      <div className="px-4 mt-8">
         {/* Avatar + Info */}
         <motion.div
           className="flex flex-col items-center"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="h-20 w-20 rounded-full gradient-primary flex items-center justify-center shadow-elevated">
-            <span className="text-2xl font-bold text-primary-foreground font-display">
+          <div className="h-24 w-24 rounded-3xl gradient-primary flex items-center justify-center shadow-elevated">
+            <span className="text-3xl font-extrabold text-primary-foreground font-display">
               {mockUser.name.split(" ").map(n => n[0]).join("")}
             </span>
           </div>
-          <h2 className="mt-3 text-lg font-bold font-display text-foreground">{mockUser.name}</h2>
+          <h2 className="mt-4 text-xl font-extrabold font-display text-foreground tracking-tight">{mockUser.name}</h2>
           {mockUser.pronouns && (
             <p className="text-sm text-muted-foreground">{mockUser.pronouns}</p>
           )}
-          <span className={`mt-2 rounded-full px-3 py-1 text-xs font-semibold ${voiceBadge[mockUser.voice]}`}>
+          <span className={`mt-2 rounded-full px-3.5 py-1 text-xs font-bold ${voiceBadge[mockUser.voice]}`}>
             {mockUser.voice}
           </span>
         </motion.div>
 
         {/* Info cards */}
-        <div className="mt-6 space-y-3">
+        <div className="mt-8 space-y-3">
           <motion.div
-            className="flex items-center gap-3 rounded-xl bg-card border border-border p-4 shadow-card"
+            className="flex items-center gap-3 rounded-2xl bg-card border border-border p-4 shadow-card"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Mail className="h-5 w-5 text-primary" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <Mail className="h-5 w-5 text-primary" />
+            </div>
             <div>
-              <p className="text-xs text-muted-foreground">Correu electrònic</p>
-              <p className="text-sm font-medium text-foreground">{mockUser.email}</p>
+              <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Correu electrònic</p>
+              <p className="text-sm font-semibold text-foreground">{mockUser.email}</p>
             </div>
           </motion.div>
 
           <motion.div
-            className="flex items-center gap-3 rounded-xl bg-card border border-border p-4 shadow-card"
+            className="flex items-center gap-3 rounded-2xl bg-card border border-border p-4 shadow-card cursor-pointer"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
+            whileTap={{ scale: 0.98 }}
           >
-            <Settings className="h-5 w-5 text-muted-foreground" />
-            <p className="text-sm font-medium text-foreground">Editar perfil</p>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted">
+              <Settings className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <p className="text-sm font-semibold text-foreground">Editar perfil</p>
           </motion.div>
 
           <motion.button
-            className="flex w-full items-center gap-3 rounded-xl bg-destructive/10 border border-destructive/20 p-4"
+            className="flex w-full items-center gap-3 rounded-2xl bg-destructive/8 border border-destructive/15 p-4"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             whileTap={{ scale: 0.98 }}
           >
-            <LogOut className="h-5 w-5 text-destructive" />
-            <p className="text-sm font-semibold text-destructive">Tancar sessió</p>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-destructive/10">
+              <LogOut className="h-5 w-5 text-destructive" />
+            </div>
+            <p className="text-sm font-bold text-destructive">Tancar sessió</p>
           </motion.button>
         </div>
       </div>
