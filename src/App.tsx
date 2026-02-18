@@ -31,7 +31,7 @@ const AppContent = () => {
   }
 
   return (
-    <>
+    <div className="relative mx-auto min-h-screen w-full max-w-md overflow-x-hidden shadow-2xl">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/calendari" element={<Calendari />} />
@@ -41,7 +41,7 @@ const AppContent = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <BottomNav />
-    </>
+    </div>
   );
 };
 
