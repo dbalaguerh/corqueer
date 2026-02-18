@@ -73,7 +73,11 @@ const Home = () => {
                 >
                   {displayName}!
                 </span>
-                <span className="text-2xl ml-1">✨</span>
+                <motion.span
+                  className="text-2xl ml-1 inline-block"
+                  animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >✨</motion.span>
               </p>
             </motion.div>
           ) : (
