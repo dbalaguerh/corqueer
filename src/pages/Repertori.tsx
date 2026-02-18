@@ -147,16 +147,16 @@ const LyricsEditor = ({
 
   if (!editing) {
     return (
-      <div className="relative group">
+      <div className="relative">
         <p className="text-xs text-foreground leading-relaxed whitespace-pre-line bg-muted/50 rounded-xl p-3 pr-10">
           {lyrics}
         </p>
         <button
           onClick={() => { setDraft(lyrics); setEditing(true); }}
-          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-background border border-border hover:bg-muted"
+          className="absolute top-2 right-2 p-1.5 rounded-lg bg-background border border-border active:bg-muted"
           title="Editar lletra"
         >
-          <Pencil className="h-3 w-3 text-muted-foreground" />
+          <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
         </button>
       </div>
     );
