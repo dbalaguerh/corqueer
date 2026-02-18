@@ -55,15 +55,15 @@ const Home = () => {
 
           {displayName ? (
             <motion.div
-              className="mt-4 text-center"
+              className="mt-4 text-center px-2"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <p className="text-base font-medium text-muted-foreground">Hola,</p>
               <p className="font-extrabold font-display leading-tight tracking-tight">
+                <span className="text-3xl text-foreground">Hola, </span>
                 <span
-                  className="text-4xl"
+                  className="text-3xl"
                   style={{
                     background: "linear-gradient(90deg, hsl(var(--block-coral)), hsl(var(--block-amber)), hsl(var(--block-lime)), hsl(var(--block-sky)), hsl(var(--block-violet)), hsl(var(--block-rose)))",
                     WebkitBackgroundClip: "text",
@@ -71,8 +71,9 @@ const Home = () => {
                     backgroundClip: "text",
                   }}
                 >
-                  {displayName}! ✨
+                  {displayName}!
                 </span>
+                <span className="text-2xl ml-1">🌟✨🌈</span>
               </p>
             </motion.div>
           ) : (
