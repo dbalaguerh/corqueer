@@ -8,6 +8,7 @@ import Calendari from "./pages/Calendari";
 import Repertori from "./pages/Repertori";
 import Mur from "./pages/Mur";
 import Perfil from "./pages/Perfil";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import BottomNav from "./components/BottomNav";
@@ -42,6 +43,7 @@ const AppContent = () => {
         <Route path="/repertori" element={<Repertori />} />
         <Route path="/mur" element={<Mur />} />
         <Route path="/perfil" element={<Perfil />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <BottomNav />
