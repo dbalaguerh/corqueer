@@ -1,19 +1,82 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, LogOut, Settings } from "lucide-react";
+import { User, Mail, LogOut, Settings, Camera } from "lucide-react";
 import RainbowBar from "@/components/RainbowBar";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
+const useProfileData = (userId?: string) => {
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [loadedUserId, setLoadedUserId] = useState<string | null>(null);
+
+  const loadPhoto = async (uid: string) => {
+    if (loadedUserId === uid) return;
+    setLoadedUserId(uid);
+    const { data } = await supabase
+      .from("profiles")
+      .select("photo_url")
+      .eq("user_id", uid)
+      .maybeSingle();
+    if (data?.photo_url) setPhotoUrl(data.photo_url);
+  };
+
+  if (userId && loadedUserId !== userId) loadPhoto(userId);
+
+  return { photoUrl, setPhotoUrl };
+};
 
 const Perfil = () => {
   const { user, signOut } = useAuth();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user?.user_metadata?.name || "");
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { photoUrl, setPhotoUrl } = useProfileData(user?.id);
 
   const displayName = user?.user_metadata?.name || user?.email?.split("@")[0] || "Usuària";
   const initials = displayName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase();
+
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("La foto no pot superar 5MB");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const path = `${user.id}/avatar.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(path, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+      const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+      const { error: dbError } = await supabase
+        .from("profiles")
+        .update({ photo_url: publicUrl })
+        .eq("user_id", user.id);
+
+      if (dbError) throw dbError;
+
+      setPhotoUrl(publicUrl);
+      toast.success("Foto actualitzada ✓");
+    } catch {
+      toast.error("Error pujant la foto");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!name.trim()) return;
@@ -54,10 +117,40 @@ const Perfil = () => {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="h-24 w-24 rounded-3xl bg-block-violet flex items-center justify-center shadow-elevated">
-            <span className="text-3xl font-extrabold text-primary-foreground font-display">
-              {initials}
-            </span>
+          {/* Avatar with photo change button */}
+          <div className="relative">
+            <div className="h-24 w-24 rounded-3xl bg-block-violet flex items-center justify-center shadow-elevated overflow-hidden">
+              {photoUrl ? (
+                <img
+                  src={photoUrl}
+                  alt="Foto de perfil"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span className="text-3xl font-extrabold text-primary-foreground font-display">
+                  {initials}
+                </span>
+              )}
+            </div>
+            <motion.button
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-card border-2 border-border shadow-card"
+              whileTap={{ scale: 0.9 }}
+              disabled={uploading}
+            >
+              {uploading ? (
+                <div className="h-3.5 w-3.5 rounded-full border-2 border-block-violet border-t-transparent animate-spin" />
+              ) : (
+                <Camera className="h-3.5 w-3.5 text-muted-foreground" />
+              )}
+            </motion.button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handlePhotoChange}
+            />
           </div>
 
           {!editing ? (
