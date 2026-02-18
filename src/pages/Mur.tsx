@@ -228,7 +228,7 @@ const Mur = () => {
               {isAdmin ? (
                 <p className="text-[10px] font-bold text-block-coral uppercase tracking-wide">Admin</p>
               ) : (
-                <p className="text-[10px] text-muted-foreground tracking-wide">idees · records · comunitat</p>
+                <p className="text-xs text-muted-foreground">Idees, Records, Comunitat</p>
               )}
             </div>
           </div>
