@@ -223,10 +223,12 @@ const Mur = () => {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-block-coral">
               <MessageSquare className="h-5 w-5 text-primary-foreground" />
             </div>
-            <div>
+              <div>
               <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">El Mur</h1>
-              {isAdmin && (
+              {isAdmin ? (
                 <p className="text-[10px] font-bold text-block-coral uppercase tracking-wide">Admin</p>
+              ) : (
+                <p className="text-[10px] text-muted-foreground tracking-wide">idees · records · comunitat</p>
               )}
             </div>
           </div>
