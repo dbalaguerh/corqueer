@@ -164,5 +164,27 @@
   .text-block-lime { color: hsl(var(--block-lime)); }
   .text-block-violet { color: hsl(var(--block-violet)); }
   .text-block-amber { color: hsl(var(--block-amber)); }
-  .text-block-rose { color: hsl(var(--block-rose)); }
+}
+
+@keyframes rainbow-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-rainbow-text {
+  background: linear-gradient(90deg,
+    hsl(var(--block-coral)),
+    hsl(var(--block-amber)),
+    hsl(var(--block-lime)),
+    hsl(var(--block-sky)),
+    hsl(var(--block-violet)),
+    hsl(var(--block-rose)),
+    hsl(var(--block-coral))
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: rainbow-shift 3s linear infinite;
 }

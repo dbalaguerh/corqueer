@@ -63,13 +63,7 @@ const Home = () => {
               <p className="font-display leading-tight tracking-tight">
                 <span className="text-xl font-normal text-muted-foreground">Hola, </span>
                 <span
-                  className="text-3xl font-extrabold"
-                  style={{
-                    background: "linear-gradient(90deg, hsl(var(--block-coral)), hsl(var(--block-amber)), hsl(var(--block-lime)), hsl(var(--block-sky)), hsl(var(--block-violet)), hsl(var(--block-rose)))",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}
+                  className="text-3xl font-extrabold animate-rainbow-text"
                 >
                   {displayName}!
                 </span>
