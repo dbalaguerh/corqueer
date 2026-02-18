@@ -15,7 +15,7 @@ const BottomNav = () => {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/90 backdrop-blur-xl">
+    <nav className="fixed bottom-0 left-1/2 z-50 w-full max-w-md -translate-x-1/2 border-t border-border bg-card/90 backdrop-blur-xl">
       <RainbowBar className="h-[4px]" />
       <div className="flex items-center justify-around px-2 py-2.5">
         {navItems.map((item) => {
