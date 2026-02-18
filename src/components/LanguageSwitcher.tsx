@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import i18n from "@/i18n";
+import { FlagCA, FlagES, FlagFR, FlagGB } from "@/components/FlagIcons";
 
 const LANGUAGES = [
-  { code: "ca", flag: "🇨🇦" },
-  { code: "es", flag: "🇪🇸" },
-  { code: "en", flag: "🇬🇧" },
-  { code: "fr", flag: "🇫🇷" },
+  { code: "ca", Flag: FlagCA },
+  { code: "es", Flag: FlagES },
+  { code: "en", Flag: FlagGB },
+  { code: "fr", Flag: FlagFR },
 ];
 
 const LanguageSwitcher = () => {
   const [open, setOpen] = useState(false);
   const current = LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
+  const CurrentFlag = current.Flag;
 
   const handleSelect = (code: string) => {
     i18n.changeLanguage(code);
@@ -23,23 +25,22 @@ const LanguageSwitcher = () => {
     <div className="relative z-50">
       <motion.button
         onClick={() => setOpen((o) => !o)}
-        className="flex h-9 w-9 items-center justify-center rounded-xl bg-card border border-border shadow-card text-lg"
+        className="flex h-9 w-9 items-center justify-center rounded-xl bg-card border border-border shadow-card overflow-hidden"
         whileTap={{ scale: 0.9 }}
         aria-label="Canviar idioma"
       >
-        {current.flag}
+        <CurrentFlag size={28} />
       </motion.button>
 
       <AnimatePresence>
         {open && (
           <>
-            {/* backdrop */}
             <div
               className="fixed inset-0 z-40"
               onClick={() => setOpen(false)}
             />
             <motion.div
-              className="absolute right-0 top-11 z-50 flex flex-col gap-1 rounded-2xl bg-card border border-border shadow-elevated p-2 min-w-[80px]"
+              className="absolute right-0 top-11 z-50 flex flex-col gap-1 rounded-2xl bg-card border border-border shadow-elevated p-2"
               initial={{ opacity: 0, scale: 0.9, y: -4 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: -4 }}
@@ -51,13 +52,13 @@ const LanguageSwitcher = () => {
                   <button
                     key={lang.code}
                     onClick={() => handleSelect(lang.code)}
-                    className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                    className={`flex items-center justify-center rounded-xl p-2 transition-all ${
                       isActive
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-muted text-foreground"
+                        ? "ring-2 ring-primary bg-primary/10"
+                        : "hover:bg-muted"
                     }`}
                   >
-                    <span className="text-base">{lang.flag}</span>
+                    <lang.Flag size={32} />
                   </button>
                 );
               })}
