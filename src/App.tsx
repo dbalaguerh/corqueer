@@ -11,6 +11,7 @@ import Perfil from "./pages/Perfil";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import BottomNav from "./components/BottomNav";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 import { useAuth } from "./hooks/useAuth";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,9 @@ const AppContent = () => {
 
   return (
     <div className="relative mx-auto min-h-screen w-full max-w-md overflow-x-hidden shadow-2xl">
+      <div className="fixed top-4 right-4 z-50 max-w-md" style={{ right: "max(1rem, calc(50% - 224px + 1rem))" }}>
+        <LanguageSwitcher />
+      </div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/calendari" element={<Calendari />} />
