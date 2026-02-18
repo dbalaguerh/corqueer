@@ -58,7 +58,6 @@ const LanguageSwitcher = () => {
                     }`}
                   >
                     <span className="text-base">{lang.flag}</span>
-                    <span>{lang.code.toUpperCase()}</span>
                   </button>
                 );
               })}
