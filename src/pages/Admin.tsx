@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Users, MessageSquare, Music, ShieldCheck, TrendingUp, Clock } from "lucide-react";
+import { Users, MessageSquare, Music, ShieldCheck, TrendingUp, Clock, Mail, Mic } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import RainbowBar from "@/components/RainbowBar";
 import { useNavigate } from "react-router-dom";
 
-interface Metrics {
+interface UserRow {
+  user_id: string;
+  name: string;
+  pronouns: string | null;
+  voice: string | null;
+  photo_url: string | null;
+  created_at: string;
+  email: string;
+  role: string;
+}
+
+interface Counts {
   totalUsers: number;
   totalPosts: number;
   totalSongs: number;
   adminCount: number;
-  recentPosts: {
-    id: string;
-    user_name: string;
-    content: string | null;
-    created_at: string;
-  }[];
-  recentUsers: {
-    id: string;
-    name: string;
-    created_at: string;
-  }[];
 }
 
 const StatCard = ({
@@ -57,7 +57,8 @@ const StatCard = ({
 const Admin = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [metrics, setMetrics] = useState<Metrics | null>(null);
+  const [users, setUsers] = useState<UserRow[]>([]);
+  const [counts, setCounts] = useState<Counts | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -65,49 +66,38 @@ const Admin = () => {
     if (!user) return;
 
     const checkAdmin = async () => {
-      const { data, error } = await supabase.rpc("has_role", {
+      const { data } = await supabase.rpc("has_role", {
         _user_id: user.id,
         _role: "admin",
       });
-      if (error || !data) {
+      if (!data) {
         navigate("/");
         return;
       }
       setIsAdmin(true);
-      fetchMetrics();
+      fetchData();
     };
 
     checkAdmin();
   }, [user, navigate]);
 
-  const fetchMetrics = async () => {
+  const fetchData = async () => {
     try {
-      const [usersRes, postsRes, songsRes, adminsRes, recentPostsRes, recentUsersRes] =
-        await Promise.all([
-          supabase.from("profiles").select("id", { count: "exact", head: true }),
-          supabase.from("wall_posts").select("id", { count: "exact", head: true }),
-          supabase.from("song_lyrics").select("id", { count: "exact", head: true }),
-          supabase.from("user_roles").select("id", { count: "exact", head: true }).eq("role", "admin"),
-          supabase
-            .from("wall_posts")
-            .select("id, user_name, content, created_at")
-            .order("created_at", { ascending: false })
-            .limit(5),
-          supabase
-            .from("profiles")
-            .select("id, name, created_at")
-            .order("created_at", { ascending: false })
-            .limit(5),
-        ]);
+      const [postsRes, songsRes, usersRes] = await Promise.all([
+        supabase.from("wall_posts").select("id", { count: "exact", head: true }),
+        supabase.from("song_lyrics").select("id", { count: "exact", head: true }),
+        supabase.rpc("get_all_users_admin"),
+      ]);
 
-      setMetrics({
-        totalUsers: usersRes.count ?? 0,
+      const allUsers: UserRow[] = (usersRes.data ?? []) as UserRow[];
+
+      setCounts({
+        totalUsers: allUsers.length,
         totalPosts: postsRes.count ?? 0,
         totalSongs: songsRes.count ?? 0,
-        adminCount: adminsRes.count ?? 0,
-        recentPosts: recentPostsRes.data ?? [],
-        recentUsers: recentUsersRes.data ?? [],
+        adminCount: allUsers.filter((u) => u.role === "admin").length,
       });
+      setUsers(allUsers);
     } finally {
       setLoading(false);
     }
@@ -156,39 +146,15 @@ const Admin = () => {
         </div>
       ) : (
         <div className="px-4 mt-5 space-y-6">
-          {/* Stats grid */}
+          {/* Stats */}
           <div className="grid grid-cols-2 gap-3">
-            <StatCard
-              icon={Users}
-              label="Membres registrats"
-              value={metrics?.totalUsers ?? 0}
-              color="bg-block-sky"
-              delay={0.1}
-            />
-            <StatCard
-              icon={MessageSquare}
-              label="Publicacions al Mur"
-              value={metrics?.totalPosts ?? 0}
-              color="bg-block-coral"
-              delay={0.15}
-            />
-            <StatCard
-              icon={Music}
-              label="Cançons al repertori"
-              value={metrics?.totalSongs ?? 0}
-              color="bg-block-violet"
-              delay={0.2}
-            />
-            <StatCard
-              icon={ShieldCheck}
-              label="Administradores"
-              value={metrics?.adminCount ?? 0}
-              color="bg-block-lime"
-              delay={0.25}
-            />
+            <StatCard icon={Users} label="Membres registrats" value={counts?.totalUsers ?? 0} color="bg-block-sky" delay={0.1} />
+            <StatCard icon={MessageSquare} label="Publicacions al Mur" value={counts?.totalPosts ?? 0} color="bg-block-coral" delay={0.15} />
+            <StatCard icon={Music} label="Cançons al repertori" value={counts?.totalSongs ?? 0} color="bg-block-violet" delay={0.2} />
+            <StatCard icon={ShieldCheck} label="Administradores" value={counts?.adminCount ?? 0} color="bg-block-lime" delay={0.25} />
           </div>
 
-          {/* Recent users */}
+          {/* Llista de membres */}
           <motion.div
             className="rounded-2xl bg-card border border-border shadow-card overflow-hidden"
             initial={{ opacity: 0, y: 12 }}
@@ -199,53 +165,65 @@ const Admin = () => {
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-block-sky">
                 <TrendingUp className="h-3.5 w-3.5 text-primary-foreground" />
               </div>
-              <h2 className="text-sm font-bold font-display text-foreground">Últimes altes</h2>
+              <h2 className="text-sm font-bold font-display text-foreground">
+                Totes les membres ({users.length})
+              </h2>
             </div>
+
             <div className="divide-y divide-border">
-              {metrics?.recentUsers.length === 0 ? (
+              {users.length === 0 ? (
                 <p className="px-4 py-3 text-sm text-muted-foreground">Sense dades</p>
               ) : (
-                metrics?.recentUsers.map((u) => (
-                  <div key={u.id} className="flex items-center justify-between px-4 py-2.5">
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-block-sky/30 text-xs font-bold text-foreground">
-                        {u.name?.[0]?.toUpperCase() ?? "?"}
-                      </div>
-                      <span className="text-sm font-medium text-foreground">{u.name}</span>
-                    </div>
-                    <span className="text-[11px] text-muted-foreground">{formatDate(u.created_at)}</span>
-                  </div>
-                ))
-              )}
-            </div>
-          </motion.div>
+                users.map((u) => (
+                  <div key={u.user_id} className="px-4 py-3">
+                    <div className="flex items-start gap-3">
+                      {/* Avatar */}
+                      {u.photo_url ? (
+                        <img
+                          src={u.photo_url}
+                          alt={u.name}
+                          className="h-9 w-9 rounded-full object-cover shrink-0 border border-border"
+                        />
+                      ) : (
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-block-sky/30 text-sm font-bold text-foreground border border-border">
+                          {u.name?.[0]?.toUpperCase() ?? "?"}
+                        </div>
+                      )}
 
-          {/* Recent posts */}
-          <motion.div
-            className="rounded-2xl bg-card border border-border shadow-card overflow-hidden"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35 }}
-          >
-            <div className="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-border">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-block-coral">
-                <Clock className="h-3.5 w-3.5 text-primary-foreground" />
-              </div>
-              <h2 className="text-sm font-bold font-display text-foreground">Últimes publicacions</h2>
-            </div>
-            <div className="divide-y divide-border">
-              {metrics?.recentPosts.length === 0 ? (
-                <p className="px-4 py-3 text-sm text-muted-foreground">Sense publicacions</p>
-              ) : (
-                metrics?.recentPosts.map((p) => (
-                  <div key={p.id} className="px-4 py-2.5">
-                    <div className="flex items-center justify-between mb-0.5">
-                      <span className="text-xs font-bold text-foreground">{p.user_name}</span>
-                      <span className="text-[11px] text-muted-foreground">{formatDate(p.created_at)}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-bold text-foreground">{u.name}</span>
+                          {u.role === "admin" && (
+                            <span className="rounded-full bg-block-violet px-2 py-0.5 text-[10px] font-bold text-primary-foreground">
+                              Admin
+                            </span>
+                          )}
+                          {u.pronouns && (
+                            <span className="text-[10px] text-muted-foreground">({u.pronouns})</span>
+                          )}
+                        </div>
+
+                        {/* Email */}
+                        <div className="flex items-center gap-1 mt-0.5">
+                          <Mail className="h-3 w-3 text-muted-foreground shrink-0" />
+                          <span className="text-[11px] text-muted-foreground truncate">{u.email}</span>
+                        </div>
+
+                        {/* Veu + data */}
+                        <div className="flex items-center gap-3 mt-0.5">
+                          {u.voice && (
+                            <div className="flex items-center gap-1">
+                              <Mic className="h-3 w-3 text-muted-foreground" />
+                              <span className="text-[11px] text-muted-foreground">{u.voice}</span>
+                            </div>
+                          )}
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3 text-muted-foreground" />
+                            <span className="text-[11px] text-muted-foreground">{formatDate(u.created_at)}</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    {p.content && (
-                      <p className="text-xs text-muted-foreground line-clamp-2">{p.content}</p>
-                    )}
                   </div>
                 ))
               )}
