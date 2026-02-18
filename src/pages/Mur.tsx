@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, Image, Mic, Send, Plus, X, Play, Pause, Square } from "lucide-react";
+import { MessageSquare, Image, Mic, Send, Plus, X, Square } from "lucide-react";
 import RainbowBar from "@/components/RainbowBar";
 import { supabase } from "@/integrations/supabase/client";
-import { useProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -80,7 +80,7 @@ const AudioRecorder = ({ onRecorded }: { onRecorded: (blob: Blob) => void }) => 
 };
 
 const Mur = () => {
-  const { profile } = useProfile();
+  const { user } = useAuth();
   const [posts, setPosts] = useState<WallPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -148,7 +148,7 @@ const Mur = () => {
         }
       }
 
-      const userName = profile?.name || user.email?.split("@")[0] || "Anònim";
+      const userName = user?.user_metadata?.name || user?.email?.split("@")[0] || "Anònim";
 
       const { error } = await supabase.from("wall_posts").insert({
         user_id: user.id,

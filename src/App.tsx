@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,20 +9,29 @@ import Repertori from "./pages/Repertori";
 import Mur from "./pages/Mur";
 import Perfil from "./pages/Perfil";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 import BottomNav from "./components/BottomNav";
-import Onboarding from "./components/Onboarding";
-import { useProfile } from "./hooks/useProfile";
+import { useAuth } from "./hooks/useAuth";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const { needsOnboarding, saveProfile } = useProfile();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-background">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Auth />;
+  }
 
   return (
     <>
-      {needsOnboarding && (
-        <Onboarding onComplete={(data) => saveProfile(data)} />
-      )}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/calendari" element={<Calendari />} />
