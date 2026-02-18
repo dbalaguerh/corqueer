@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, Image, Mic, Send, Plus, X, Square } from "lucide-react";
+import { MessageSquare, Image, Mic, Send, Plus, X, Square, Trash2 } from "lucide-react";
 import RainbowBar from "@/components/RainbowBar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 
 interface WallPost {
   id: string;
+  user_id: string;
   user_name: string;
   content: string | null;
   media_urls: string[];
@@ -88,6 +89,8 @@ const Mur = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [audioBlobs, setAudioBlobs] = useState<Blob[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchPosts = async () => {
@@ -100,25 +103,51 @@ const Mur = () => {
     setLoading(false);
   };
 
+  const checkAdmin = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+    setIsAdmin(!!data);
+  };
+
   useEffect(() => {
     fetchPosts();
+    checkAdmin();
 
     const channel = supabase
       .channel("wall-realtime")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "wall_posts" }, (payload) => {
         setPosts((prev) => [payload.new as WallPost, ...prev]);
       })
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "wall_posts" }, (payload) => {
+        setPosts((prev) => prev.filter((p) => p.id !== payload.old.id));
+      })
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, []);
+  }, [user]);
+
+  const handleDelete = async (postId: string) => {
+    setDeletingId(postId);
+    const { error } = await supabase.from("wall_posts").delete().eq("id", postId);
+    if (error) {
+      toast.error("No s'ha pogut esborrar");
+    } else {
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
+      toast.success("Missatge esborrat");
+    }
+    setDeletingId(null);
+  };
 
   const handleSubmit = async () => {
     if (!content.trim() && files.length === 0 && audioBlobs.length === 0) return;
     setSubmitting(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast.error("Has d'iniciar sessió per publicar");
         setSubmitting(false);
@@ -127,7 +156,6 @@ const Mur = () => {
 
       const mediaUrls: string[] = [];
 
-      // Upload images
       for (const file of files) {
         const ext = file.name.split(".").pop();
         const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
@@ -138,7 +166,6 @@ const Mur = () => {
         }
       }
 
-      // Upload audio recordings
       for (const blob of audioBlobs) {
         const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.webm`;
         const { error } = await supabase.storage.from("wall-media").upload(path, blob, { contentType: "audio/webm" });
@@ -188,6 +215,8 @@ const Mur = () => {
     return colors[i % colors.length];
   };
 
+  const canDelete = (post: WallPost) => isAdmin || post.user_id === user?.id;
+
   return (
     <div className="pb-safe">
       <header className="relative overflow-hidden bg-card border-b border-border">
@@ -196,7 +225,12 @@ const Mur = () => {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-block-coral">
               <MessageSquare className="h-5 w-5 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">El Mur</h1>
+            <div>
+              <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">El Mur</h1>
+              {isAdmin && (
+                <p className="text-[10px] font-bold text-block-coral uppercase tracking-wide">Admin</p>
+              )}
+            </div>
           </div>
         </div>
         <RainbowBar />
@@ -238,7 +272,6 @@ const Mur = () => {
                 rows={3}
               />
 
-              {/* Previews */}
               {(files.length > 0 || audioBlobs.length > 0) && (
                 <div className="flex flex-wrap gap-2">
                   {files.map((f, i) => (
@@ -339,7 +372,19 @@ const Mur = () => {
                   </div>
                   <p className="text-sm font-bold font-display text-foreground">{post.user_name}</p>
                 </div>
-                <p className="text-[11px] font-medium text-muted-foreground/60">{formatDate(post.created_at)}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-[11px] font-medium text-muted-foreground/60">{formatDate(post.created_at)}</p>
+                  {canDelete(post) && (
+                    <button
+                      onClick={() => handleDelete(post.id)}
+                      disabled={deletingId === post.id}
+                      className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
+                      title="Esborrar missatge"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
 
               {post.content && (
