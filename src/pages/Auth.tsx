@@ -5,10 +5,12 @@ import logo from "@/assets/logo.jpg";
 import RainbowBar from "@/components/RainbowBar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 type Mode = "login" | "signup";
 
 const Auth = () => {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +24,7 @@ const Auth = () => {
 
     if (mode === "signup") {
       if (!name.trim()) {
-        toast.error("Introdueix el teu nom");
+        toast.error(t("auth_name_required"));
         setLoading(false);
         return;
       }
@@ -32,9 +34,9 @@ const Auth = () => {
         options: { data: { name: name.trim() } },
       });
       if (error) {
-        toast.error(error.message === "User already registered" ? "Aquest email ja existeix" : error.message);
+        toast.error(error.message === "User already registered" ? t("auth_email_exists") : error.message);
       } else {
-        toast.success("Compte creat! Ja pots entrar ✨");
+        toast.success(t("auth_created"));
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({
@@ -44,7 +46,7 @@ const Auth = () => {
       if (error) {
         toast.error(
           error.message === "Invalid login credentials"
-            ? "Email o contrasenya incorrectes"
+            ? t("auth_wrong_credentials")
             : error.message
         );
       }
@@ -82,10 +84,9 @@ const Auth = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.15 }}
         >
-          {mode === "login" ? "Accedeix al teu compte" : "Crea un compte nou"}
+          {mode === "login" ? t("auth_access") : t("auth_create")}
         </motion.p>
 
-        {/* Mode toggle */}
         <motion.div
           className="flex w-full max-w-xs rounded-2xl bg-muted p-1 mb-6"
           initial={{ opacity: 0, y: 8 }}
@@ -102,7 +103,7 @@ const Auth = () => {
                   : "text-muted-foreground"
               }`}
             >
-              {m === "login" ? "Entrar" : "Registrar-se"}
+              {m === "login" ? t("auth_login") : t("auth_signup")}
             </button>
           ))}
         </motion.div>
@@ -126,7 +127,7 @@ const Auth = () => {
                 <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
                   type="text"
-                  placeholder="El teu nom"
+                  placeholder={t("auth_name")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full rounded-2xl border border-border bg-card pl-10 pr-4 py-3.5 text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
@@ -139,7 +140,7 @@ const Auth = () => {
             <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="email"
-              placeholder="Correu electrònic"
+              placeholder={t("auth_email")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -151,7 +152,7 @@ const Auth = () => {
             <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Contrasenya"
+              placeholder={t("auth_password")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -172,7 +173,7 @@ const Auth = () => {
             disabled={loading}
             className="w-full rounded-2xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-elevated disabled:opacity-50 disabled:cursor-not-allowed transition-opacity mt-2"
           >
-            {loading ? "..." : mode === "login" ? "Entrar →" : "Crear compte ✨"}
+            {loading ? t("auth_loading") : mode === "login" ? t("auth_login_btn") : t("auth_signup_btn")}
           </button>
         </motion.form>
       </div>

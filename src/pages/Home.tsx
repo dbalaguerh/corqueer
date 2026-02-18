@@ -4,6 +4,7 @@ import logo from "@/assets/logo.png";
 import RainbowBar from "@/components/RainbowBar";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 const announcements = [
   {
@@ -31,13 +32,13 @@ const announcements = [
 ];
 
 const Home = () => {
+  const { t } = useTranslation();
   const { profile } = useProfile();
   const { user } = useAuth();
   const displayName = profile?.name || user?.user_metadata?.name || user?.email?.split("@")[0];
 
   return (
     <div className="pb-safe">
-      {/* Hero — logo molt gran */}
       <div className="relative overflow-hidden bg-card">
         <div className="flex flex-col items-center px-6 pt-3 pb-4">
           <motion.div
@@ -61,12 +62,8 @@ const Home = () => {
               transition={{ delay: 0.2 }}
             >
               <p className="font-display leading-tight tracking-tight">
-                <span className="text-xl font-normal text-muted-foreground">Hola, </span>
-                <span
-                  className="text-3xl font-extrabold animate-rainbow-text"
-                >
-                  {displayName}!
-                </span>
+                <span className="text-xl font-normal text-muted-foreground">{t("home_hello")} </span>
+                <span className="text-3xl font-extrabold animate-rainbow-text">{displayName}!</span>
                 <motion.span
                   className="text-2xl ml-1 inline-block"
                   animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
@@ -81,14 +78,13 @@ const Home = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              Cor queer de Barcelona 🏳️‍🌈
+              {t("home_choir")}
             </motion.p>
           )}
         </div>
         <RainbowBar className="h-[5px]" />
       </div>
 
-      {/* Quick Actions — grid de blocs de colors */}
       <div className="px-4 mt-6">
         <div className="grid grid-cols-3 gap-3">
           <motion.a
@@ -104,8 +100,8 @@ const Home = () => {
               <CalendarDays className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <p className="text-sm font-bold font-display text-foreground">Calendari</p>
-              <p className="text-[10px] text-muted-foreground">Pròxims events</p>
+              <p className="text-sm font-bold font-display text-foreground">{t("home_calendar")}</p>
+              <p className="text-[10px] text-muted-foreground">{t("home_calendar_sub")}</p>
             </div>
           </motion.a>
 
@@ -122,8 +118,8 @@ const Home = () => {
               <Music className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <p className="text-sm font-bold font-display text-foreground">Repertori</p>
-              <p className="text-[10px] text-muted-foreground">Cançons i àudios</p>
+              <p className="text-sm font-bold font-display text-foreground">{t("home_repertori")}</p>
+              <p className="text-[10px] text-muted-foreground">{t("home_repertori_sub")}</p>
             </div>
           </motion.a>
 
@@ -140,20 +136,19 @@ const Home = () => {
               <MessageSquare className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <p className="text-sm font-bold font-display text-foreground">El Mur</p>
-              <p className="text-[10px] text-muted-foreground">Idees i àudios</p>
+              <p className="text-sm font-bold font-display text-foreground">{t("home_mur")}</p>
+              <p className="text-[10px] text-muted-foreground">{t("home_mur_sub")}</p>
             </div>
           </motion.a>
         </div>
       </div>
 
-      {/* Announcements */}
       <div className="px-4 mt-7">
         <div className="flex items-center gap-2 mb-4">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-block-coral">
             <Megaphone className="h-4 w-4 text-primary-foreground" />
           </div>
-          <h2 className="text-lg font-bold font-display text-foreground">Anuncis</h2>
+          <h2 className="text-lg font-bold font-display text-foreground">{t("home_announcements")}</h2>
         </div>
         <div className="space-y-3">
           {announcements.map((a, i) => (
@@ -170,7 +165,7 @@ const Home = () => {
                   <h3 className="text-sm font-bold font-display text-foreground">{a.title}</h3>
                   {a.pinned && (
                     <span className="shrink-0 rounded-full bg-block-coral px-2.5 py-0.5 text-[10px] font-bold text-primary-foreground">
-                      📌 Fixat
+                      {t("home_pinned")}
                     </span>
                   )}
                 </div>
