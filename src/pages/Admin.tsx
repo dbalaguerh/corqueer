@@ -87,9 +87,14 @@ const Admin = () => {
         supabase.from("wall_posts").select("id", { count: "exact", head: true }),
         supabase.from("song_lyrics").select("id", { count: "exact", head: true }),
         supabase.rpc("get_all_users_admin"),
+
       ]);
 
-      const allUsers: UserRow[] = (usersRes.data ?? []) as UserRow[];
+      // Excloure Antonin (c797df9b-e66c-4922-96d2-3beff1a03aea)
+      const EXCLUDED_USERS = ["c797df9b-e66c-4922-96d2-3beff1a03aea"];
+      const allUsers: UserRow[] = ((usersRes.data ?? []) as UserRow[]).filter(
+        (u) => !EXCLUDED_USERS.includes(u.user_id)
+      );
 
       setCounts({
         totalUsers: allUsers.length,
