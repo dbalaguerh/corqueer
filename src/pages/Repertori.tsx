@@ -1,7 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Music, ChevronDown, Play, Pause, FileText, Download } from "lucide-react";
+import { Music, ChevronDown, Play, Pause, FileText, Download, Pencil, Check, X } from "lucide-react";
 import RainbowBar from "@/components/RainbowBar";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface AudioTrack {
   label: string;
@@ -21,44 +23,10 @@ interface Song {
   files?: SongFile[];
 }
 
-const songs: Song[] = [
+const songsStatic: Omit<Song, "lyrics">[] = [
   {
     id: 1,
     title: "CANT DE LLUITA",
-    lyrics: `Som en acte de protesta.
-Som mans fredes vora el foc.
-Som la veu de la revolta,
-netes de la por i el dol.
-
-Disfressades d'utopia
-emprendrem lluny del dolor
-la recerca de la vida
-a cavall de la raó.
-
-Som en acte de protesta.
-Som mans fredes vora el foc.
-Som la veu de la revolta,
-netes de la por i el dol.
-
-Coincideixen les mirades,
-fixades en l'horitzó.
-Potser avui farem victòria,
-potser enterrarem el plor.
-
-Som en acte de protesta.
-Som mans fredes vora el foc.
-Som la veu de la revolta,
-netes de la por i el dol.
-
-Doncs ens mantindrem alçades,
-ja no ens veuran de genolls.
-El Sol mantindrà la flama,
-la Lluna encendrà passió.
-
-Som en acte de protesta.
-Som mans fredes vora el foc.
-Som la veu de la revolta,
-netes de la por i el dol.`,
     audioTracks: [
       { label: "Veus juntes", src: "/songs/cant-de-lluita-veus-juntes.mp3" },
       { label: "Veu 1 (Greu)", src: "/songs/cant-de-lluita-veu1-greu.mp3" },
@@ -72,52 +40,6 @@ netes de la por i el dol.`,
   {
     id: 2,
     title: "PERDUDA EN TU",
-    lyrics: `Quan ja no et cremi la mirada
-Recordarás tots els perills dels que venim.
-Cremen com brases, cauen, tendres
-Torna a aquells dies, no et rendies saps que sí
-
-Saps que es aixi…
-
-Pont:
-Fuma si és que en tens perquè res durarà
-Tot el que volgut sempre ets tu
-Mai arribaré al cel, no se el camí
-Amb una copa o dos
-
-Estribillo:
-Per tot el que he perdut en tu, oh,
-digue'm, s'ha perdut en tu? Oh...
-Si em poguessis deixar anar, oh,
-després de tot el que he perdut,
-Perduda en tu!
-Oh-oh, oh
-Perduda en tu?
-Oh-oh,
-nena, estic perduda en tu? Perduda en tu?
-
-Voldria veure el que penses
-Entendre el pes de tot el que t'ha fet patir
-Abraçam fort tingue'm paciencia
-Se que mestimes molt mes del que em vols ferir
-I encara em tens aqui
-
-Pont:
-Fuma si és que en tens perquè res durarà
-Tot el que volgut sempre ets tu
-Mai arribaré al cel, no se el camí
-Amb una copa o dos
-
-Estribillo:
-Per tot el que he perdut en tu, oh,
-digue'm, s'ha perdut en tu? Oh...
-Si em poguessis deixar anar, oh,
-després de tot el que he perdut,
-Perduda en tu!
-Oh-oh, oh
-Perduda en tu?
-Oh-oh,
-nena, estic perduda en tu? Perduda en tu?`,
     audioTracks: [
       { label: "Veus juntes", src: "/songs/perduda-en-tu-veus-juntes.mp3" },
       { label: "Veu 1 (Aguda)", src: "/songs/perduda-en-tu-veu1-aguda.mp3" },
@@ -127,45 +49,6 @@ nena, estic perduda en tu? Perduda en tu?`,
   {
     id: 3,
     title: "FOC AL COR",
-    lyrics: `Som foc al Cor
-Espurna, Flama i Brasa
-Fondrem la por
-Com la neu de la carena
-
-Encens les llums
-Amb la pell de gallina
-Sento l'escalfor,
-Estel fugaç que mira
-
-PONT
-Nena per fi a casa has arribat
-Això que sento no és casualitat,
-
-ESTRIBILLO
-No es només perqué sigui Nadal
-Ni és l'arbre, les llums ni els regals
-És sentir que som comunitat
-És mirar-te
-I voler-te abraçar
-
-Som llar de foc,
-som família escollida,
-Tendra revolució
-Que ens trobarà unides
-
-Farem que aquest amor
-sigui tots els dies.
-
-PONT
-Nena per fi a casa has arribat
-Això que sento no és casualitat,
-
-ESTRIBILLO
-No es només perqué sigui Nadal
-Ni és l'arbre, les llums ni els regals
-És sentir que som comunitat
-És mirar-te
-I voler-te abraçar`,
     audioTracks: [
       { label: "Àudio d'assaig", src: "/songs/foc-al-cor.mp3" },
     ],
@@ -173,89 +56,10 @@ I voler-te abraçar`,
   {
     id: 4,
     title: "SI TE'N VAS",
-    lyrics: `Se li nota a la veu
-Per dins és de colors
-I li sobra el valor que ens manca a les dues
-I arrisca la vida sempre en causes perdudes
-Tant de bo que la trobi enmig de tantes flors
-Tant de bo que sigui una rossella
-Que m'agafi la mà i que em digui que ella
-No comprèn la vida, no...
-I que em demani més més més dona'm més
-Que m'ho demani.
-
-És capaç de nedar sota el mar més profund
-La superheroïna que salvarà el món
-Allà on trenquen les ones, salvarà papallones.
-
-Tant de bo que desperti i no busqui raons
-Tant de bo que comenci de 0
-I poder-li dir que he passat la vida
-No sabent que l'espero, nooo
-Sense que em demani més més més dona'm més,
-Sense que m'ho demani.
-
-Si te'n vas em quedo al carreró sense sortida, uuuh sense sortida.
-Que aquest bar no suportarà una altra partida, una altra partida.
-
-Com un extraterrestre que arriba i aterra
-I em porta regals des d'un altre planeta
-Li regalo una pedra, un record de la Terra..
-Pregunta per què l'home va inventar la guerra
-I en silenci pregunta coses més profundes
-I em poso calenta quan em balla una lenta
-
-Si te'n vas em quedo al carreró sense sortida, uuuh sense sortida.
-Que aquest bar no suportarà una altra partida, una altra partida.
-
-Si he trigat i no he vingut
-És que hi ha hagut impediments
-Em van portar detinguda
-Obligada a declarar
-
-He robat he mentit
-I he perdut també el temps
-I he buscat allò prohibit
-Per tenir bons aliments
-
-I és que la realitat
-Que necessito
-Se n'ha anat darrera
-de ese culito
-
-x2
-Si te'n vas em quedo al carreró sense sortida, uuuh sense sortida.
-Que aquest bar no suportarà una altra partida, una altra partida.`,
   },
   {
     id: 5,
     title: "CLANDESTINA",
-    lyrics: `Es dimecres a la tarda i començo a caminar
-I en cada trepitjada sento el cor bategar
-Deixo enrere males cares
-I em creuo amb les mirades que veuen de veritat
-
-De Roquetes a Poblenou
-Del Raval fins al Camp Nou
-Hi ha un cor que crema i em mou
-Hi ha un cor que crema i em mou
-
-Clandestina, còctel de vitamines
-M'allibera i em treu la por
-I em sacseja com mil tambors
-
-Clandestina, peces de la crew felina
-Fa que'm puji la serotonina
-Així que dona'm més benzina,
-dame más gasolina, veïna
-
-Clandestina cóctel de vitaminas
-me libera y me quita to',
-me sacude como un tambor,
-Clandestina, piezas de la crew felina
-que me sube la serotonina
-así que dona'm més benzina,
-dame más gasolina, vecina`,
     audioTracks: [
       { label: "Cor", src: "/songs/clandestina-cor.mp3" },
     ],
@@ -263,7 +67,6 @@ dame más gasolina, vecina`,
   {
     id: 6,
     title: "DUETTO DI DUE GATTI",
-    lyrics: "Miau! 🐱🐱",
     files: [
       { label: "Partitura (PDF)", src: "/songs/duetto-gatti-partitura.pdf" },
     ],
@@ -295,11 +98,7 @@ const AudioPlayer = ({ track }: { track: AudioTrack }) => {
 
   return (
     <div className="flex items-center gap-2">
-      <audio
-        ref={audioRef}
-        src={track.src}
-        onEnded={() => setPlaying(false)}
-      />
+      <audio ref={audioRef} src={track.src} onEnded={() => setPlaying(false)} />
       <button
         onClick={toggle}
         className="flex items-center gap-2 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-primary-foreground shadow-card"
@@ -311,8 +110,112 @@ const AudioPlayer = ({ track }: { track: AudioTrack }) => {
   );
 };
 
+const LyricsEditor = ({
+  songId,
+  lyrics,
+  onSaved,
+}: {
+  songId: number;
+  lyrics: string;
+  onSaved: (newLyrics: string) => void;
+}) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(lyrics);
+  const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
+
+  const handleSave = async () => {
+    setSaving(true);
+    const { error } = await supabase
+      .from("song_lyrics")
+      .upsert({ id: songId, title: "", lyrics: draft, updated_at: new Date().toISOString() }, { onConflict: "id" });
+
+    setSaving(false);
+    if (error) {
+      toast({ title: "Error en guardar", description: error.message, variant: "destructive" });
+    } else {
+      onSaved(draft);
+      setEditing(false);
+      toast({ title: "Lletra guardada ✓" });
+    }
+  };
+
+  const handleCancel = () => {
+    setDraft(lyrics);
+    setEditing(false);
+  };
+
+  if (!editing) {
+    return (
+      <div className="relative group">
+        <p className="text-xs text-foreground leading-relaxed whitespace-pre-line bg-muted/50 rounded-xl p-3 pr-10">
+          {lyrics}
+        </p>
+        <button
+          onClick={() => { setDraft(lyrics); setEditing(true); }}
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-background border border-border hover:bg-muted"
+          title="Editar lletra"
+        >
+          <Pencil className="h-3 w-3 text-muted-foreground" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      <textarea
+        className="w-full text-xs text-foreground leading-relaxed bg-muted/50 rounded-xl p-3 border border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none min-h-[200px] font-mono"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        autoFocus
+      />
+      <div className="flex gap-2">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-primary-foreground disabled:opacity-60"
+        >
+          <Check className="h-3.5 w-3.5" />
+          {saving ? "Guardant…" : "Guardar"}
+        </button>
+        <button
+          onClick={handleCancel}
+          className="flex items-center gap-1.5 rounded-xl bg-muted px-3 py-2 text-xs font-bold text-foreground border border-border"
+        >
+          <X className="h-3.5 w-3.5" />
+          Cancel·lar
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const Repertori = () => {
   const [expanded, setExpanded] = useState<number | null>(null);
+  const [lyricsMap, setLyricsMap] = useState<Record<number, string>>({});
+  const [loadedIds, setLoadedIds] = useState<Set<number>>(new Set());
+
+  // Load lyrics from DB when a song is expanded
+  useEffect(() => {
+    if (expanded === null || loadedIds.has(expanded)) return;
+
+    supabase
+      .from("song_lyrics")
+      .select("id, lyrics")
+      .eq("id", expanded)
+      .single()
+      .then(({ data }) => {
+        if (data) {
+          setLyricsMap((prev) => ({ ...prev, [data.id]: data.lyrics ?? "" }));
+          setLoadedIds((prev) => new Set(prev).add(data.id));
+        }
+      });
+  }, [expanded, loadedIds]);
+
+  const handleLyricsSaved = (songId: number, newLyrics: string) => {
+    setLyricsMap((prev) => ({ ...prev, [songId]: newLyrics }));
+  };
 
   return (
     <div className="pb-safe">
@@ -324,7 +227,7 @@ const Repertori = () => {
             </div>
             <div>
               <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">Repertori</h1>
-              <p className="text-xs text-muted-foreground">{songs.length} cançons al repertori actual</p>
+              <p className="text-xs text-muted-foreground">{songsStatic.length} cançons al repertori actual</p>
             </div>
           </div>
         </div>
@@ -332,8 +235,9 @@ const Repertori = () => {
       </header>
 
       <div className="px-4 mt-4 space-y-3">
-        {songs.map((song, i) => {
-          const hasContent = song.lyrics || song.audioTracks?.length || song.files?.length;
+        {songsStatic.map((song, i) => {
+          const lyrics = lyricsMap[song.id];
+          const hasContent = lyrics || song.audioTracks?.length || song.files?.length;
           return (
             <motion.div
               key={song.id}
@@ -366,16 +270,21 @@ const Repertori = () => {
                     className="overflow-hidden"
                   >
                     <div className="px-4 pb-4 border-t border-border pt-3 space-y-3 pl-5">
-                      {song.lyrics && (
+                      {lyrics !== undefined && (
                         <div>
                           <div className="flex items-center gap-1.5 mb-1.5">
                             <FileText className="h-3.5 w-3.5 text-muted-foreground" />
                             <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Lletra</span>
                           </div>
-                          <p className="text-xs text-foreground leading-relaxed whitespace-pre-line bg-muted/50 rounded-xl p-3">
-                            {song.lyrics}
-                          </p>
+                          <LyricsEditor
+                            songId={song.id}
+                            lyrics={lyrics}
+                            onSaved={(nl) => handleLyricsSaved(song.id, nl)}
+                          />
                         </div>
+                      )}
+                      {lyrics === undefined && loadedIds.has(song.id) === false && expanded === song.id && (
+                        <p className="text-xs text-muted-foreground italic">Carregant lletra…</p>
                       )}
 
                       {song.audioTracks && song.audioTracks.length > 0 && (
@@ -415,8 +324,8 @@ const Repertori = () => {
                         </div>
                       )}
 
-                      {!hasContent && (
-                        <p className="text-xs text-muted-foreground italic">Puja els fitxers (MP3 i lletres) al xat per afegir contingut aquí.</p>
+                      {!hasContent && loadedIds.has(song.id) && (
+                        <p className="text-xs text-muted-foreground italic">No hi ha contingut per a aquesta cançó.</p>
                       )}
                     </div>
                   </motion.div>

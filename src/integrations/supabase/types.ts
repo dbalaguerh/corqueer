@@ -47,6 +47,30 @@ export type Database = {
         }
         Relationships: []
       }
+      song_lyrics: {
+        Row: {
+          id: number
+          lyrics: string | null
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          id: number
+          lyrics?: string | null
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          id?: number
+          lyrics?: string | null
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
