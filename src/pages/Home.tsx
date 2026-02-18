@@ -3,6 +3,7 @@ import { Megaphone, CalendarDays, Music, MessageSquare } from "lucide-react";
 import logo from "@/assets/logo.png";
 import RainbowBar from "@/components/RainbowBar";
 import { useProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/hooks/useAuth";
 
 const announcements = [
   {
@@ -31,6 +32,8 @@ const announcements = [
 
 const Home = () => {
   const { profile } = useProfile();
+  const { user } = useAuth();
+  const displayName = profile?.name || user?.user_metadata?.name || user?.email?.split("@")[0];
 
   return (
     <div className="pb-safe">
@@ -50,7 +53,7 @@ const Home = () => {
             />
           </motion.div>
 
-          {profile && (
+          {displayName ? (
             <motion.div
               className="mt-4 text-center"
               initial={{ opacity: 0, y: 8 }}
@@ -58,7 +61,7 @@ const Home = () => {
               transition={{ delay: 0.2 }}
             >
               <p className="text-base font-medium text-muted-foreground">Hola,</p>
-              <p className="font-extrabold font-display leading-none tracking-tight">
+              <p className="font-extrabold font-display leading-tight tracking-tight">
                 <span
                   className="text-4xl"
                   style={{
@@ -68,12 +71,11 @@ const Home = () => {
                     backgroundClip: "text",
                   }}
                 >
-                  {profile.name}!
+                  {displayName}! ✨
                 </span>
               </p>
             </motion.div>
-          )}
-          {!profile && (
+          ) : (
             <motion.p
               className="mt-5 text-sm font-medium text-muted-foreground"
               initial={{ opacity: 0 }}
