@@ -72,9 +72,7 @@ netes de la por i el dol.`,
   {
     id: 2,
     title: "PERDUDA EN TU",
-    lyrics: `Estrofa 1
-
-Quan ja no et cremi la mirada
+    lyrics: `Quan ja no et cremi la mirada
 Recordarás tots els perills dels que venim.
 Cremen com brases, cauen, tendres
 Torna a aquells dies, no et rendies saps que sí
@@ -83,7 +81,7 @@ Saps que es aixi…
 
 Pont:
 Fuma si és que en tens perquè res durarà
-Tot el que mai he volgut ets tu
+Tot el que volgut sempre ets tu
 Mai arribaré al cel, no se el camí
 Amb una copa o dos
 
@@ -98,12 +96,28 @@ Perduda en tu?
 Oh-oh,
 nena, estic perduda en tu? Perduda en tu?
 
-Estrofa 2:
 Voldria veure el que penses
 Entendre el pes de tot el que t'ha fet patir
 Abraçam fort tingue'm paciencia
 Se que mestimes molt mes del que em vols ferir
-I encara em tens aqui`,
+I encara em tens aqui
+
+Pont:
+Fuma si és que en tens perquè res durarà
+Tot el que volgut sempre ets tu
+Mai arribaré al cel, no se el camí
+Amb una copa o dos
+
+Estribillo:
+Per tot el que he perdut en tu, oh,
+digue'm, s'ha perdut en tu? Oh...
+Si em poguessis deixar anar, oh,
+després de tot el que he perdut,
+Perduda en tu!
+Oh-oh, oh
+Perduda en tu?
+Oh-oh,
+nena, estic perduda en tu? Perduda en tu?`,
     audioTracks: [
       { label: "Veus juntes", src: "/songs/perduda-en-tu-veus-juntes.mp3" },
       { label: "Veu 1 (Aguda)", src: "/songs/perduda-en-tu-veu1-aguda.mp3" },
@@ -233,7 +247,15 @@ I em sacseja com mil tambors
 Clandestina, peces de la crew felina
 Fa que'm puji la serotonina
 Així que dona'm més benzina,
-dame más gasolina, veïna`,
+dame más gasolina, veïna
+
+Clandestina cóctel de vitaminas
+me libera y me quita to',
+me sacude como un tambor,
+Clandestina, piezas de la crew felina
+que me sube la serotonina
+así que dona'm més benzina,
+dame más gasolina, vecina`,
     audioTracks: [
       { label: "Cor", src: "/songs/clandestina-cor.mp3" },
     ],
