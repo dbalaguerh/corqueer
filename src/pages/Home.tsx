@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Megaphone, CalendarDays, Music, MessageSquare, Sparkles } from "lucide-react";
+import { Megaphone, CalendarDays, Music, MessageSquare } from "lucide-react";
 import logo from "@/assets/logo.png";
 import RainbowBar from "@/components/RainbowBar";
 import { useProfile } from "@/hooks/useProfile";
@@ -51,15 +51,27 @@ const Home = () => {
           </motion.div>
 
           {profile && (
-            <motion.p
-              className="mt-5 text-xl font-extrabold font-display text-foreground"
+            <motion.div
+              className="mt-4 text-center"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              Hola, <span className="text-gradient">{profile.name}</span>!{" "}
-              <Sparkles className="inline h-4 w-4 ml-0.5 text-accent" />
-            </motion.p>
+              <p className="text-base font-medium text-muted-foreground">Hola,</p>
+              <p className="font-extrabold font-display leading-none tracking-tight">
+                <span
+                  className="text-4xl"
+                  style={{
+                    background: "linear-gradient(90deg, hsl(var(--block-coral)), hsl(var(--block-amber)), hsl(var(--block-lime)), hsl(var(--block-sky)), hsl(var(--block-violet)), hsl(var(--block-rose)))",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  {profile.name}!
+                </span>
+              </p>
+            </motion.div>
           )}
           {!profile && (
             <motion.p
