@@ -219,17 +219,23 @@ const Mur = () => {
     <div className="pb-safe">
       <header className="relative overflow-hidden bg-card border-b border-border">
         <div className="relative px-4 pt-8 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-block-coral">
-              <MessageSquare className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">El Mur</h1>
-              {isAdmin && (
-                <p className="text-[10px] font-bold text-block-coral uppercase tracking-wide">Admin</p>
-              )}
-            </div>
-          </div>
+          <p className="text-sm font-medium text-muted-foreground mb-0.5">Hola,</p>
+          <h1 className="font-extrabold font-display tracking-tight leading-none">
+            <span
+              className="text-3xl"
+              style={{
+                background: "linear-gradient(90deg, hsl(var(--block-coral)), hsl(var(--block-amber)), hsl(var(--block-lime)), hsl(var(--block-sky)), hsl(var(--block-violet)), hsl(var(--block-rose)))",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              {user?.user_metadata?.name || user?.email?.split("@")[0] || "Cantaire"} ✨
+            </span>
+          </h1>
+          {isAdmin && (
+            <p className="text-[10px] font-bold text-block-coral uppercase tracking-wide mt-1">Admin</p>
+          )}
         </div>
         <RainbowBar />
       </header>
@@ -313,7 +319,7 @@ const Mur = () => {
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/*,audio/*"
+                    accept="image/*,audio/*,video/*"
                     multiple
                     className="hidden"
                     onChange={handleFileSelect}
@@ -397,6 +403,14 @@ const Mur = () => {
                         <audio key={j} controls className="w-full max-w-xs h-10 rounded-lg" preload="none">
                           <source src={url} />
                         </audio>
+                      );
+                    }
+                    if (url.match(/\.(mp4|mov|avi|mkv|webm)(\?|$)/i)) {
+                      return (
+                        <video key={j} controls className="max-h-64 rounded-xl w-full" preload="metadata">
+                          <source src={url} />
+                          El teu navegador no suporta aquest format de vídeo.
+                        </video>
                       );
                     }
                     return (
