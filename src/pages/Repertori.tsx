@@ -4,6 +4,7 @@ import { Music, ChevronDown, Play, Pause, FileText, Download, Pencil, Check, X }
 import RainbowBar from "@/components/RainbowBar";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface AudioTrack {
   label: string;
@@ -119,6 +120,7 @@ const LyricsEditor = ({
   lyrics: string;
   onSaved: (newLyrics: string) => void;
 }) => {
+  const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(lyrics);
   const [saving, setSaving] = useState(false);
@@ -132,11 +134,11 @@ const LyricsEditor = ({
 
     setSaving(false);
     if (error) {
-      toast({ title: "Error en guardar", description: error.message, variant: "destructive" });
+      toast({ title: t("rep_save_error"), description: error.message, variant: "destructive" });
     } else {
       onSaved(draft);
       setEditing(false);
-      toast({ title: "Lletra guardada ✓" });
+      toast({ title: t("rep_saved") });
     }
   };
 
@@ -154,7 +156,7 @@ const LyricsEditor = ({
         <button
           onClick={() => { setDraft(lyrics); setEditing(true); }}
           className="absolute top-2 right-2 p-1.5 rounded-lg bg-background border border-border active:bg-muted"
-          title="Editar lletra"
+          title={t("rep_lyrics")}
         >
           <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
         </button>
@@ -177,14 +179,14 @@ const LyricsEditor = ({
           className="flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-primary-foreground disabled:opacity-60"
         >
           <Check className="h-3.5 w-3.5" />
-          {saving ? "Guardant…" : "Guardar"}
+          {saving ? t("rep_saving") : t("rep_save")}
         </button>
         <button
           onClick={handleCancel}
           className="flex items-center gap-1.5 rounded-xl bg-muted px-3 py-2 text-xs font-bold text-foreground border border-border"
         >
           <X className="h-3.5 w-3.5" />
-          Cancel·lar
+          {t("rep_cancel")}
         </button>
       </div>
     </div>
@@ -192,11 +194,11 @@ const LyricsEditor = ({
 };
 
 const Repertori = () => {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState<number | null>(null);
   const [lyricsMap, setLyricsMap] = useState<Record<number, string>>({});
   const [loadedIds, setLoadedIds] = useState<Set<number>>(new Set());
 
-  // Load lyrics from DB when a song is expanded
   useEffect(() => {
     if (expanded === null || loadedIds.has(expanded)) return;
 
@@ -226,8 +228,8 @@ const Repertori = () => {
               <Music className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">Repertori</h1>
-              <p className="text-xs text-muted-foreground">{songsStatic.length} cançons al repertori actual</p>
+              <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">{t("rep_title")}</h1>
+              <p className="text-xs text-muted-foreground">{t("rep_subtitle", { count: songsStatic.length })}</p>
             </div>
           </div>
         </div>
@@ -274,7 +276,7 @@ const Repertori = () => {
                         <div>
                           <div className="flex items-center gap-1.5 mb-1.5">
                             <FileText className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Lletra</span>
+                            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">{t("rep_lyrics")}</span>
                           </div>
                           <LyricsEditor
                             songId={song.id}
@@ -284,14 +286,14 @@ const Repertori = () => {
                         </div>
                       )}
                       {lyrics === undefined && loadedIds.has(song.id) === false && expanded === song.id && (
-                        <p className="text-xs text-muted-foreground italic">Carregant lletra…</p>
+                        <p className="text-xs text-muted-foreground italic">{t("rep_loading_lyrics")}</p>
                       )}
 
                       {song.audioTracks && song.audioTracks.length > 0 && (
                         <div>
                           <div className="flex items-center gap-1.5 mb-2">
                             <Music className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Àudios</span>
+                            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">{t("rep_audios")}</span>
                           </div>
                           <div className="flex flex-wrap gap-2">
                             {song.audioTracks.map((track, j) => (
@@ -305,7 +307,7 @@ const Repertori = () => {
                         <div>
                           <div className="flex items-center gap-1.5 mb-2">
                             <Download className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Fitxers</span>
+                            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">{t("rep_files")}</span>
                           </div>
                           <div className="flex flex-wrap gap-2">
                             {song.files.map((file, j) => (
@@ -325,7 +327,7 @@ const Repertori = () => {
                       )}
 
                       {!hasContent && loadedIds.has(song.id) && (
-                        <p className="text-xs text-muted-foreground italic">No hi ha contingut per a aquesta cançó.</p>
+                        <p className="text-xs text-muted-foreground italic">{t("rep_no_content")}</p>
                       )}
                     </div>
                   </motion.div>

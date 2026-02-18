@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface WallPost {
   id: string;
@@ -17,21 +18,25 @@ interface WallPost {
   created_at: string;
 }
 
-const formatDate = (dateStr: string) => {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  if (diffMins < 1) return "Ara mateix";
-  if (diffMins < 60) return `Fa ${diffMins} min`;
-  const diffHours = Math.floor(diffMins / 60);
-  if (diffHours < 24) return `Fa ${diffHours}h`;
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 7) return `Fa ${diffDays}d`;
-  return date.toLocaleDateString("ca-ES", { day: "numeric", month: "short" });
+const useFormatDate = () => {
+  const { t } = useTranslation();
+  return (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    if (diffMins < 1) return t("mur_now");
+    if (diffMins < 60) return t("mur_min_ago", { count: diffMins });
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return t("mur_hours_ago", { count: diffHours });
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays < 7) return t("mur_days_ago", { count: diffDays });
+    return date.toLocaleDateString("ca-ES", { day: "numeric", month: "short" });
+  };
 };
 
 const AudioRecorder = ({ onRecorded }: { onRecorded: (blob: Blob) => void }) => {
+  const { t } = useTranslation();
   const [recording, setRecording] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -55,7 +60,7 @@ const AudioRecorder = ({ onRecorded }: { onRecorded: (blob: Blob) => void }) => 
       setElapsed(0);
       timerRef.current = window.setInterval(() => setElapsed((e) => e + 1), 1000);
     } catch {
-      toast.error("No s'ha pogut accedir al micròfon");
+      toast.error(t("mur_mic_error"));
     }
   };
 
@@ -69,7 +74,7 @@ const AudioRecorder = ({ onRecorded }: { onRecorded: (blob: Blob) => void }) => 
     <div className="flex items-center gap-2">
       {!recording ? (
         <Button variant="outline" size="sm" onClick={start} className="gap-1.5">
-          <Mic className="h-4 w-4" /> Gravar
+          <Mic className="h-4 w-4" /> {t("mur_record")}
         </Button>
       ) : (
         <Button variant="destructive" size="sm" onClick={stop} className="gap-1.5 animate-pulse">
@@ -81,6 +86,8 @@ const AudioRecorder = ({ onRecorded }: { onRecorded: (blob: Blob) => void }) => 
 };
 
 const Mur = () => {
+  const { t } = useTranslation();
+  const formatDate = useFormatDate();
   const { user } = useAuth();
   const [posts, setPosts] = useState<WallPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -133,10 +140,10 @@ const Mur = () => {
     setDeletingId(postId);
     const { error } = await supabase.from("wall_posts").delete().eq("id", postId);
     if (error) {
-      toast.error("No s'ha pogut esborrar");
+      toast.error(t("mur_delete_error"));
     } else {
       setPosts((prev) => prev.filter((p) => p.id !== postId));
-      toast.success("Missatge esborrat");
+      toast.success(t("mur_deleted"));
     }
     setDeletingId(null);
   };
@@ -147,7 +154,7 @@ const Mur = () => {
 
     try {
       if (!user) {
-        toast.error("Has d'iniciar sessió per publicar");
+        toast.error(t("mur_login_required"));
         setSubmitting(false);
         return;
       }
@@ -183,17 +190,17 @@ const Mur = () => {
       });
 
       if (error) {
-        toast.error("Error publicant");
+        toast.error(t("mur_publish_error"));
         console.error(error);
       } else {
-        toast.success("Publicat! ✨");
+        toast.success(t("mur_published"));
         setContent("");
         setFiles([]);
         setAudioBlobs([]);
         setShowForm(false);
       }
     } catch (e) {
-      toast.error("Error inesperat");
+      toast.error(t("mur_unexpected_error"));
       console.error(e);
     }
     setSubmitting(false);
@@ -223,12 +230,12 @@ const Mur = () => {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-block-coral">
               <MessageSquare className="h-5 w-5 text-primary-foreground" />
             </div>
-              <div>
-              <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">El Mur</h1>
+            <div>
+              <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">{t("mur_title")}</h1>
               {isAdmin ? (
-                <p className="text-[10px] font-bold text-block-coral uppercase tracking-wide">Admin</p>
+                <p className="text-[10px] font-bold text-block-coral uppercase tracking-wide">{t("mur_admin")}</p>
               ) : (
-                <p className="text-xs text-muted-foreground">Idees, Records, Comunitat</p>
+                <p className="text-xs text-muted-foreground">{t("mur_subtitle")}</p>
               )}
             </div>
           </div>
@@ -236,7 +243,6 @@ const Mur = () => {
         <RainbowBar />
       </header>
 
-      {/* FAB to show form */}
       {!showForm && (
         <motion.button
           className="fixed bottom-24 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-elevated"
@@ -247,7 +253,6 @@ const Mur = () => {
         </motion.button>
       )}
 
-      {/* Post form */}
       <AnimatePresence>
         {showForm && (
           <motion.div
@@ -258,14 +263,14 @@ const Mur = () => {
           >
             <div className="rounded-2xl bg-card border border-border p-4 shadow-card space-y-3">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-bold font-display text-foreground">Nova publicació</p>
+                <p className="text-sm font-bold font-display text-foreground">{t("mur_new_post")}</p>
                 <button onClick={() => setShowForm(false)}>
                   <X className="h-5 w-5 text-muted-foreground" />
                 </button>
               </div>
 
               <Textarea
-                placeholder="Escriu una idea, comentari, suggeriment..."
+                placeholder={t("mur_placeholder")}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 className="rounded-xl border-border bg-background resize-none text-sm"
@@ -310,7 +315,7 @@ const Mur = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className="gap-1.5">
-                    <Image className="h-4 w-4" /> Foto
+                    <Image className="h-4 w-4" /> {t("mur_photo")}
                   </Button>
                   <input
                     ref={fileInputRef}
@@ -323,7 +328,7 @@ const Mur = () => {
                   <AudioRecorder onRecorded={(blob) => setAudioBlobs((prev) => [...prev, blob])} />
                 </div>
                 <Button size="sm" onClick={handleSubmit} disabled={submitting} className="gap-1.5">
-                  <Send className="h-4 w-4" /> {submitting ? "..." : "Publicar"}
+                  <Send className="h-4 w-4" /> {submitting ? t("mur_publishing") : t("mur_publish")}
                 </Button>
               </div>
             </div>
@@ -331,7 +336,6 @@ const Mur = () => {
         )}
       </AnimatePresence>
 
-      {/* Posts feed */}
       <div className="px-4 mt-4 space-y-3">
         {loading && (
           <div className="flex justify-center py-12">
@@ -348,8 +352,8 @@ const Mur = () => {
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-block-coral/10 mb-4">
               <MessageSquare className="h-8 w-8 text-block-coral" />
             </div>
-            <p className="text-lg font-bold font-display text-foreground">El mur està buit!</p>
-            <p className="text-sm text-muted-foreground mt-1">Sigues la primera en publicar 🎶</p>
+            <p className="text-lg font-bold font-display text-foreground">{t("mur_empty")}</p>
+            <p className="text-sm text-muted-foreground mt-1">{t("mur_empty_sub")}</p>
           </motion.div>
         )}
 
@@ -379,7 +383,6 @@ const Mur = () => {
                       onClick={() => handleDelete(post.id)}
                       disabled={deletingId === post.id}
                       className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
-                      title="Esborrar missatge"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -405,7 +408,6 @@ const Mur = () => {
                       return (
                         <video key={j} controls className="max-h-64 rounded-xl w-full" preload="metadata">
                           <source src={url} />
-                          El teu navegador no suporta aquest format de vídeo.
                         </video>
                       );
                     }

@@ -1,10 +1,19 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, LogOut, Settings, Camera } from "lucide-react";
+import { User, Mail, LogOut, Settings, Camera, Globe } from "lucide-react";
 import RainbowBar from "@/components/RainbowBar";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
+
+const LANGUAGES = [
+  { code: "ca", flag: "🇨🇦", key: "lang_ca" },
+  { code: "es", flag: "🇪🇸", key: "lang_es" },
+  { code: "en", flag: "🇬🇧", key: "lang_en" },
+  { code: "fr", flag: "🇫🇷", key: "lang_fr" },
+];
 
 const useProfileData = (userId?: string) => {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -27,6 +36,7 @@ const useProfileData = (userId?: string) => {
 };
 
 const Perfil = () => {
+  const { t } = useTranslation();
   const { user, signOut } = useAuth();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user?.user_metadata?.name || "");
@@ -44,7 +54,7 @@ const Perfil = () => {
     if (!file || !user) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("La foto no pot superar 5MB");
+      toast.error(t("perfil_photo_size"));
       return;
     }
 
@@ -70,9 +80,9 @@ const Perfil = () => {
       if (dbError) throw dbError;
 
       setPhotoUrl(publicUrl);
-      toast.success("Foto actualitzada ✓");
+      toast.success(t("perfil_photo_updated"));
     } catch {
-      toast.error("Error pujant la foto");
+      toast.error(t("perfil_photo_error"));
     } finally {
       setUploading(false);
     }
@@ -83,9 +93,9 @@ const Perfil = () => {
     setSaving(true);
     const { error } = await supabase.auth.updateUser({ data: { name: name.trim() } });
     if (error) {
-      toast.error("Error desant el nom");
+      toast.error(t("perfil_name_error"));
     } else {
-      toast.success("Nom actualitzat ✓");
+      toast.success(t("perfil_name_updated"));
       setEditing(false);
     }
     setSaving(false);
@@ -93,6 +103,11 @@ const Perfil = () => {
 
   const handleLogout = async () => {
     await signOut();
+  };
+
+  const handleLanguageChange = (code: string) => {
+    i18n.changeLanguage(code);
+    localStorage.setItem("lang", code);
   };
 
   if (!user) return null;
@@ -105,7 +120,7 @@ const Perfil = () => {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-block-violet">
               <User className="h-5 w-5 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">Perfil</h1>
+            <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">{t("perfil_title")}</h1>
           </div>
         </div>
         <RainbowBar />
@@ -117,7 +132,6 @@ const Perfil = () => {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          {/* Avatar with photo change button */}
           <div className="relative">
             <div className="h-24 w-24 rounded-3xl bg-block-violet flex items-center justify-center shadow-elevated overflow-hidden">
               {photoUrl ? (
@@ -164,7 +178,7 @@ const Perfil = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
-                placeholder="El teu nom"
+                placeholder={t("perfil_name_placeholder")}
                 autoFocus
               />
             </div>
@@ -184,7 +198,7 @@ const Perfil = () => {
                 <Mail className="h-5 w-5 text-block-sky" />
               </div>
               <div className="pl-1">
-                <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Correu electrònic</p>
+                <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">{t("perfil_email")}</p>
                 <p className="text-sm font-semibold text-foreground">{user.email}</p>
               </div>
             </motion.div>
@@ -210,7 +224,7 @@ const Perfil = () => {
               <Settings className="h-5 w-5 text-block-amber" />
             </div>
             <p className="text-sm font-semibold text-foreground pl-1">
-              {editing ? (saving ? "Desant..." : "Guardar canvis ✓") : "Editar nom"}
+              {editing ? (saving ? t("perfil_saving") : t("perfil_save")) : t("perfil_edit_name")}
             </p>
           </motion.button>
 
@@ -222,9 +236,44 @@ const Perfil = () => {
               animate={{ opacity: 1 }}
               whileTap={{ scale: 0.98 }}
             >
-              Cancel·lar
+              {t("perfil_cancel")}
             </motion.button>
           )}
+
+          {/* Language selector */}
+          <motion.div
+            className="rounded-2xl bg-card border border-border p-4 shadow-card relative overflow-hidden"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18 }}
+          >
+            <div className="absolute left-0 top-0 w-1 h-full bg-block-lime" />
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-block-lime/10">
+                <Globe className="h-5 w-5 text-block-lime" />
+              </div>
+              <p className="text-sm font-semibold text-foreground pl-1">{t("perfil_language")}</p>
+            </div>
+            <div className="grid grid-cols-4 gap-2 pl-1">
+              {LANGUAGES.map((lang) => {
+                const isActive = i18n.language === lang.code;
+                return (
+                  <button
+                    key={lang.code}
+                    onClick={() => handleLanguageChange(lang.code)}
+                    className={`flex flex-col items-center gap-1 rounded-xl py-2 px-1 text-xs font-bold transition-all border ${
+                      isActive
+                        ? "bg-primary text-primary-foreground border-primary shadow-card"
+                        : "bg-muted text-muted-foreground border-transparent hover:border-border"
+                    }`}
+                  >
+                    <span className="text-lg">{lang.flag}</span>
+                    <span className="text-[10px]">{lang.code.toUpperCase()}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
 
           <motion.button
             onClick={handleLogout}
@@ -238,7 +287,7 @@ const Perfil = () => {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-destructive/10">
               <LogOut className="h-5 w-5 text-destructive" />
             </div>
-            <p className="text-sm font-bold text-destructive pl-1">Tancar sessió</p>
+            <p className="text-sm font-bold text-destructive pl-1">{t("perfil_logout")}</p>
           </motion.button>
         </div>
       </div>

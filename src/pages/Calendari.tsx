@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { CalendarDays, MapPin, Clock } from "lucide-react";
 import RainbowBar from "@/components/RainbowBar";
+import { useTranslation } from "react-i18next";
 
 type EventType = "assaig" | "concert" | "social";
 
@@ -13,18 +14,6 @@ interface CalEvent {
   location: string;
 }
 
-const typeConfig: Record<EventType, { label: string; bgClass: string; textClass: string }> = {
-  assaig: { label: "Assaig", bgClass: "bg-block-sky/10", textClass: "text-block-sky" },
-  concert: { label: "Concert", bgClass: "bg-block-violet/10", textClass: "text-block-violet" },
-  social: { label: "Social", bgClass: "bg-block-coral/10", textClass: "text-block-coral" },
-};
-
-const barColors: Record<EventType, string> = {
-  assaig: "bg-block-sky",
-  concert: "bg-block-violet",
-  social: "bg-block-coral",
-};
-
 const events: CalEvent[] = [
   { id: 1, title: "🎨 ART CARXOFA — Coming Soon!", type: "social", date: "Pròximament", time: "TBA", location: "Per confirmar" },
   { id: 2, title: "Assaig setmanal", type: "assaig", date: "Dimecres 19 feb", time: "19:00 – 21:00", location: "La Clandestina de Poblenou" },
@@ -34,6 +23,20 @@ const events: CalEvent[] = [
 ];
 
 const Calendari = () => {
+  const { t } = useTranslation();
+
+  const typeConfig: Record<EventType, { label: string; bgClass: string; textClass: string }> = {
+    assaig: { label: t("cal_assaig"), bgClass: "bg-block-sky/10", textClass: "text-block-sky" },
+    concert: { label: t("cal_concert"), bgClass: "bg-block-violet/10", textClass: "text-block-violet" },
+    social: { label: t("cal_social"), bgClass: "bg-block-coral/10", textClass: "text-block-coral" },
+  };
+
+  const barColors: Record<EventType, string> = {
+    assaig: "bg-block-sky",
+    concert: "bg-block-violet",
+    social: "bg-block-coral",
+  };
+
   return (
     <div className="pb-safe">
       <header className="relative overflow-hidden bg-card border-b border-border">
@@ -43,27 +46,25 @@ const Calendari = () => {
               <CalendarDays className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">Calendari</h1>
-              <p className="text-xs text-muted-foreground">Pròxims assajos, concerts i trobades</p>
+              <h1 className="text-xl font-extrabold font-display text-foreground tracking-tight">{t("cal_title")}</h1>
+              <p className="text-xs text-muted-foreground">{t("cal_subtitle")}</p>
             </div>
           </div>
         </div>
         <RainbowBar className="h-[4px]" />
       </header>
 
-      {/* Filters */}
       <div className="flex gap-2 px-4 mt-5 overflow-x-auto">
-        {(["assaig", "concert", "social"] as EventType[]).map((t) => (
+        {(["assaig", "concert", "social"] as EventType[]).map((type) => (
           <span
-            key={t}
-            className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-bold ${typeConfig[t].bgClass} ${typeConfig[t].textClass}`}
+            key={type}
+            className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-bold ${typeConfig[type].bgClass} ${typeConfig[type].textClass}`}
           >
-            {typeConfig[t].label}
+            {typeConfig[type].label}
           </span>
         ))}
       </div>
 
-      {/* Events list */}
       <div className="px-4 mt-4 space-y-3">
         {events.map((e, i) => (
           <motion.div

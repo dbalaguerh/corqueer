@@ -2,17 +2,19 @@ import { NavLink, useLocation } from "react-router-dom";
 import { Home, Calendar, Music, MessageSquare, User } from "lucide-react";
 import { motion } from "framer-motion";
 import RainbowBar from "@/components/RainbowBar";
-
-const navItems = [
-  { to: "/", icon: Home, label: "Inici" },
-  { to: "/calendari", icon: Calendar, label: "Calendari" },
-  { to: "/repertori", icon: Music, label: "Repertori" },
-  { to: "/mur", icon: MessageSquare, label: "Mur" },
-  { to: "/perfil", icon: User, label: "Perfil" },
-];
+import { useTranslation } from "react-i18next";
 
 const BottomNav = () => {
   const location = useLocation();
+  const { t } = useTranslation();
+
+  const navItems = [
+    { to: "/", icon: Home, label: t("nav_home") },
+    { to: "/calendari", icon: Calendar, label: t("nav_calendar") },
+    { to: "/repertori", icon: Music, label: t("nav_repertori") },
+    { to: "/mur", icon: MessageSquare, label: t("nav_mur") },
+    { to: "/perfil", icon: User, label: t("nav_perfil") },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-1/2 z-50 w-full max-w-md -translate-x-1/2 border-t border-border bg-card/90 backdrop-blur-xl">
