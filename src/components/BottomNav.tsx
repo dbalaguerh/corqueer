@@ -1,12 +1,24 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Home, Calendar, Music, MessageSquare, User } from "lucide-react";
+import { Home, Calendar, Music, MessageSquare, User, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import RainbowBar from "@/components/RainbowBar";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/useAuth";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const BottomNav = () => {
   const location = useLocation();
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
+      setIsAdmin(!!data);
+    });
+  }, [user]);
 
   const navItems = [
     { to: "/", icon: Home, label: t("nav_home") },
@@ -14,6 +26,7 @@ const BottomNav = () => {
     { to: "/repertori", icon: Music, label: t("nav_repertori") },
     { to: "/mur", icon: MessageSquare, label: t("nav_mur") },
     { to: "/perfil", icon: User, label: t("nav_perfil") },
+    ...(isAdmin ? [{ to: "/admin", icon: ShieldCheck, label: "Admin" }] : []),
   ];
 
   return (
@@ -26,7 +39,7 @@ const BottomNav = () => {
             <NavLink
               key={item.to}
               to={item.to}
-              className="relative flex flex-col items-center gap-1 px-4 py-1"
+              className="relative flex flex-col items-center gap-1 px-3 py-1"
             >
               {isActive && (
                 <motion.div
